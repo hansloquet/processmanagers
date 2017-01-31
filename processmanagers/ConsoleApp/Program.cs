@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -20,8 +21,9 @@ namespace ConsoleApp
 
             var cooks = new[] {"Tom", "Basil", "Frank", "Jef"}
                 .Select(name => new Tuple<string, IHandleOrder>(name, new RoundRobin(assistantManagers)))
-                .Select(tuple => new Tuple<string, IHandleOrder>(tuple.Item1, new Cook(random.Next(0, 4000), tuple.Item2)))
-                .Select(tuple => new ThreadedHandler(tuple.Item1, tuple.Item2))
+                .Select(name_managers => new Tuple<string, IHandleOrder>(name_managers.Item1, new Cook(random.Next(0, 4000), name_managers.Item2)))
+                .Select(name_cook => new Tuple<string, IHandleOrder>(name_cook.Item1, new TtlChecker(name_cook.Item2)))
+                .Select(name_checker => new ThreadedHandler(name_checker.Item1, name_checker.Item2))
                 .ToList();
 
 

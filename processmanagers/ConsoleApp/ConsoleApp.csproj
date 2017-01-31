@@ -57,6 +57,7 @@
     <Compile Include="Repeater.cs" />
     <Compile Include="RoundRobin.cs" />
     <Compile Include="ThreadedHandler.cs" />
+    <Compile Include="TtlChecker.cs" />
     <Compile Include="Waiter.cs" />
   </ItemGroup>
   <ItemGroup>
