@@ -19,14 +19,9 @@ namespace ConsoleApp
         {
             var order = new Order {TableNumber = _counter++};
             order.AddItem(3, "French Fries", 1);
-            //_handleOrder.Handle(order);
-            _publisher.Publish("OrderPlaced", order);
+    
+            _publisher.Publish(new OrderPlaced(order));
             return Guid.Empty;
         }
-    }
-
-    public interface IPublisher
-    {
-        void Publish(string topic, Order order);
     }
 }

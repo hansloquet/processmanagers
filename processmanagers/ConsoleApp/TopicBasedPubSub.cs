@@ -31,5 +31,10 @@ namespace ConsoleApp
 
 
         }
+
+        public void Publish(OrderPlaced orderPlaced)
+        {
+            Publish(orderPlaced.GetType().Name, orderPlaced.Order);
+        }
     }
 }
