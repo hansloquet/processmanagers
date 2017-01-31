@@ -1,6 +1,4 @@
-﻿using System.Threading;
-
-namespace ConsoleApp
+﻿namespace ConsoleApp
 {
     internal class Program
     {
@@ -16,23 +14,6 @@ namespace ConsoleApp
             {
                 waiter.PlaceOrder();
             }
-        }
-    }
-
-    internal class Cashier : IHandleOrder
-    {
-        private readonly IHandleOrder _handleOrder;
-
-        public Cashier(IHandleOrder handleOrder)
-        {
-            _handleOrder = handleOrder;
-    
-        }
-
-        public void Handle(Order order)
-        {
-            Thread.Sleep(2000);
-           _handleOrder.Handle(order);
         }
     }
 }

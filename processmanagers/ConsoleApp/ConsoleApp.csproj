@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssistentManager.cs" />
+    <Compile Include="Cashier.cs" />
     <Compile Include="Cook.cs" />
     <Compile Include="HandleOrder.cs" />
     <Compile Include="Order.cs" />

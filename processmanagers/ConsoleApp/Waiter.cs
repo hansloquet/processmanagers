@@ -11,9 +11,12 @@ namespace ConsoleApp
             _handleOrder = handleOrder;
         }
 
+        private static int counter = 1;
         public Guid PlaceOrder()
         {
             var order = new Order();
+            order.TableNumber = counter++;
+            order.AddItem(3, "French Fries", 1);
             _handleOrder.Handle(order);
             return Guid.Empty;
         }
