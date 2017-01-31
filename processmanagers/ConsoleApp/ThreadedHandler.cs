@@ -9,6 +9,7 @@ namespace ConsoleApp
         
         public int Wip => orders.Count;
         public string Name { get; private set; }
+        public int Done { get; private set; }
 
         private readonly IHandleOrder _handler;
         readonly ConcurrentQueue<Order> orders = new ConcurrentQueue<Order>();
@@ -35,6 +36,7 @@ namespace ConsoleApp
                             if (orders.TryDequeue(out order))
                             {
                                 _handler.Handle(order: order);
+                                Done++;
                             }
                             else
                             {

@@ -5,24 +5,25 @@ namespace ConsoleApp
 {
     internal class MoreFairHandler : IHandleOrder
     {
-        private readonly List<ThreadedHandler> _cooks;
+        private readonly Queue<ThreadedHandler> _handlers;
 
-        public MoreFairHandler(List<ThreadedHandler> cooks)
+        public MoreFairHandler(IEnumerable<ThreadedHandler> handlers)
         {
-            _cooks = cooks;
+            _handlers = new Queue<ThreadedHandler>(handlers);
         }
 
         public void Handle(Order order)
         {
             while (true)
             {
-                foreach (var cook in _cooks)
+                var handler = _handlers.Peek();
+                _handlers.Enqueue(_handlers.Dequeue());
+                if(handler.Wip < 5)
                 {
-                    if (cook.Wip >= 2) continue;
-                    cook.Handle(order);
+                    handler.Handle(order);
                     return;
                 }
-                Thread.Sleep(100);
+                Thread.Sleep(2000);
             }
         }
     }

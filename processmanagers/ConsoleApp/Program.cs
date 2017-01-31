@@ -48,7 +48,7 @@ namespace ConsoleApp
                     Console.WriteLine($"{threadedHandler.Name} {threadedHandler.Wip}");
                     foreach (var cook in cooks)
                     {
-                        Console.WriteLine($"{cook.Name} {cook.Wip}");
+                        Console.WriteLine($"{cook.Name} - WIP: {cook.Wip} - DONE: {cook.Done}");
                     }
 
                     Thread.Sleep(1000);
