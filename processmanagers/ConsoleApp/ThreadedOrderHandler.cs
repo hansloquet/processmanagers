@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace ConsoleApp
 {
-    internal class ThreadedHandler<TMessage> : IHandle<TMessage>
+    internal class ThreadedHandler<TMessage> : IHandle<TMessage>, IStartable
     {
         public int Wip => _messages.Count;
         public string Name { get; private set; }
@@ -22,7 +22,6 @@ namespace ConsoleApp
         public void Handle(TMessage message)
         {
             _messages.Enqueue(message);
-
         }
 
         public void Start()

@@ -10,14 +10,13 @@ namespace ConsoleApp
     {
         public static void Main(string[] args)
         {
-            var orderPubSub = new TopicBasedOrderPubSub();
             var pubSub = new TopicBasedPubSub();
 
             var random = new Random();
             var cashier = new Cashier(pubSub);
             var printer = new OrderPrinter();
 
-            var assistantManagers = Enumerable.Range(0, 2)
+            var assistantManagers = Enumerable.Range(0, 5)
                 .Select(index => new AssistantManager(pubSub))
                 .Select(manager => new ThreadedHandler<OrderCooked>("Assistant", manager))
                 .ToList();
@@ -31,12 +30,16 @@ namespace ConsoleApp
 //                .ToList();
 
 //            var kitchenDispatcher = new ThreadedOrderHandler("More Fair Handler", new MoreFairHandler(cooks));
-            var cook = new ThreadedHandler<OrderPlaced>("Cook", new Cook(500, pubSub));
+            var cooks = Enumerable.Range(0, 3)
+                .Select(index => assistantManager)
+                .Select(managers => new Cook(random.Next(0, 500), pubSub))
+                .Select(c => new ThreadedHandler<OrderPlaced>("Cook", c))
+                .ToList();
+            var cook = new RoundRobin<OrderPlaced>(cooks);
 
             var waiter = new Waiter(pubSub);
 
             // subscribe
-//            orderPubSub.Subscribe<OrderPlaced>(new Cook(500, pubSub));
             pubSub.Subscribe(cook);
             pubSub.Subscribe(assistantManager);
             pubSub.Subscribe(cashier);
@@ -45,12 +48,12 @@ namespace ConsoleApp
             //orderpaid
             
 //            kitchenDispatcher.Start();
-//            foreach (var cook in cooks)
-//            {
-                cook.Start();
-//            }
+            foreach (var c in cooks)
+            {
+                c.Start();
+            }
 
-            foreach (var manager in assistantManagers.Cast<ThreadedHandler<OrderCooked>>())
+            foreach (var manager in assistantManagers)
             {
                 manager.Start();
             }
@@ -61,11 +64,11 @@ namespace ConsoleApp
                 {
                     Console.WriteLine("*******************");
 //                    Console.WriteLine($"{kitchenDispatcher.Name} {kitchenDispatcher.Wip}");
-//                    foreach (var cook in cooks)
-//                    {
-                        Console.WriteLine($"{cook.Name} - WIP: {cook.Wip} - DONE: {cook.Done}");
-//                    }
-                    foreach (var manager in assistantManagers.Cast<ThreadedHandler<OrderCooked>>())
+                    foreach (var c in cooks)
+                    {
+                        Console.WriteLine($"{c.Name} - WIP: {c.Wip} - DONE: {c.Done}");
+                    }
+                    foreach (var manager in assistantManagers)
                     {
                         Console.WriteLine($"{manager.Name} - WIP: {manager.Wip} - DONE: {manager.Done}");
                     }
@@ -73,7 +76,7 @@ namespace ConsoleApp
                     Console.WriteLine($"Paid - DONE: {printer.Done} - Total income: {printer.Total}");
                     Thread.Sleep(1000);
                 }
-            });
+            }, TaskCreationOptions.LongRunning);
 
             for (var i = 0; i < 100; i++)
             {
