@@ -14,8 +14,9 @@ namespace ConsoleApp
             var cashier = new Cashier(printer);
 
 
-            var assistantManagers = new[] {"Assistent 1", "Assistent 2"}.Select(
-                name => new ThreadedHandler(name, new AssistantManager(cashier))).ToList();
+            var assistantManagers = new[] {"Assistent 1", "Assistent 2"}
+                .Select(name => new Tuple<string, IHandleOrder>(name, new AssistantManager(cashier)))
+                .Select(tuple => new ThreadedHandler(tuple.Item1, tuple.Item2)).ToList();
 
             var cooks = new[] {"Tom", "Basil", "Frank", "Jef"}
                 .Select(name => new Tuple<string, IHandleOrder>(name, new RoundRobin(assistantManagers)))
