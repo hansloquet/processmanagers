@@ -9,6 +9,8 @@ namespace ConsoleApp
     {
         public static void Main(string[] args)
         {
+            var topicBasedPubSub = new TopicBasedPubSub();
+
             var random = new Random();
             var printer = new OrderPrinter();
             var cashier = new Cashier(printer);
@@ -27,7 +29,9 @@ namespace ConsoleApp
                 .ToList();
 
             var threadedHandler = new ThreadedHandler("More Fair Handler", new MoreFairHandler(cooks));
-            var waiter = new Waiter(threadedHandler);
+            topicBasedPubSub.Subscribe("OrderPlaced", threadedHandler);
+
+            var waiter = new Waiter(topicBasedPubSub);
 
 
             threadedHandler.Start();
