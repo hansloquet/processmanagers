@@ -14,17 +14,17 @@ namespace ConsoleApp
             var cashier = new Cashier(printer);
 
 
-            var assistantManagers = new[] {"Assistent 1", "Assistent 2"}
-                .Select(name => new Tuple<string, IHandleOrder>(name, new AssistantManager(cashier)))
-                .Select(tuple => new ThreadedHandler(tuple.Item1, tuple.Item2)).ToList();
-
-            var cooks = new[] {"Tom", "Basil", "Frank", "Jef"}
-                .Select(name => new Tuple<string, IHandleOrder>(name, new RoundRobin(assistantManagers)))
-                .Select(name_managers => new Tuple<string, IHandleOrder>(name_managers.Item1, new Cook(random.Next(0, 4000), name_managers.Item2)))
-                .Select(name_cook => new Tuple<string, IHandleOrder>(name_cook.Item1, new TtlChecker(name_cook.Item2)))
-                .Select(name_checker => new ThreadedHandler(name_checker.Item1, name_checker.Item2))
+            var assistantManagers = Enumerable.Range(0, 2)
+                .Select(index => new AssistantManager(cashier))
+                .Select(manager => new ThreadedHandler("Assistant", manager))
                 .ToList();
 
+            var cooks = Enumerable.Range(0, 3)
+                .Select(index => new RoundRobin(assistantManagers))
+                .Select(managers => new Cook(random.Next(0, 4000), managers))
+//                .Select(cook => new TtlChecker(cook))
+                .Select(checker => new ThreadedHandler("Cook", checker))
+                .ToList();
 
             var threadedHandler = new ThreadedHandler("More Fair Handler", new MoreFairHandler(cooks));
             var waiter = new Waiter(threadedHandler);
@@ -50,6 +50,10 @@ namespace ConsoleApp
                     foreach (var cook in cooks)
                     {
                         Console.WriteLine($"{cook.Name} - WIP: {cook.Wip} - DONE: {cook.Done}");
+                    }
+                    foreach (var manager in assistantManagers)
+                    {
+                        Console.WriteLine($"{manager.Name} - WIP: {manager.Wip} - DONE: {manager.Done}");
                     }
 
                     Thread.Sleep(1000);

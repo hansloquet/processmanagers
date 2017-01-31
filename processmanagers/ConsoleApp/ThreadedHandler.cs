@@ -6,7 +6,7 @@ namespace ConsoleApp
 {
     internal class ThreadedHandler : IHandleOrder, IStartable
     {
-        
+        private static int _counter;
         public int Wip => orders.Count;
         public string Name { get; private set; }
         public int Done { get; private set; }
@@ -16,7 +16,7 @@ namespace ConsoleApp
 
         public ThreadedHandler(string name, IHandleOrder handler)
         {
-            Name = name;
+            Name = $"{name} {++_counter}";
             _handler = handler;
         }
 
