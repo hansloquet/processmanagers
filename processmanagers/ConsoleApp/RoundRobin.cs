@@ -11,6 +11,11 @@ namespace ConsoleApp
             _handlers = new Queue<IHandleOrder>(handlers);
         }
 
+        public RoundRobin(IEnumerable<IHandleOrder> handlers)
+        {
+            _handlers = new Queue<IHandleOrder>(handlers);
+        }
+
         public void Handle(Order order)
         {
             _handlers.Peek().Handle(order);

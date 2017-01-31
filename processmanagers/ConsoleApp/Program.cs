@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,31 +9,37 @@ namespace ConsoleApp
     {
         public static void Main(string[] args)
         {
+            var random = new Random();
             var printer = new OrderPrinter();
             var cashier = new Cashier(printer);
 
-            var assistentManager1 = new ThreadedHandler("Assistant1", new AssistantManager(cashier));
-            var assistentManager2 = new ThreadedHandler("Assistant2", new AssistantManager(cashier));
-            var assistentManagers = new RoundRobin(assistentManager1, assistentManager2);
 
-            var random = new Random();
+            var assistantManagers = new[] {"Assistent 1", "Assistent 2"}.Select(
+                name => new ThreadedHandler(name, new AssistantManager(cashier))).ToList();
 
-            var cooks = new[] {"Tom", "Basil", "Frank"}.Select(
-                name => new ThreadedHandler(name, new Cook(random.Next(0, 4000), assistentManagers))).ToList();
+            var cooks = new[] {"Tom", "Basil", "Frank", "Jef"}
+                .Select(name => new Tuple<string, IHandleOrder>(name, new RoundRobin(assistantManagers)))
+                .Select(tuple => new Tuple<string, IHandleOrder>(tuple.Item1, new Cook(random.Next(0, 4000), tuple.Item2)))
+                .Select(tuple => new ThreadedHandler(tuple.Item1, tuple.Item2))
+                .ToList();
 
-            var waiter = new Waiter(new RoundRobin(cooks.ToArray()));
+            var waiter = new Waiter(new RoundRobin(cooks));
 
-            assistentManager1.Start();
-            assistentManager2.Start();
+            foreach (var cook in cooks)
+            {
+                cook.Start();
+            }
+
+            foreach (var assistentManager in assistantManagers)
+            {
+                assistentManager.Start();
+            }
 
             Task.Factory.StartNew(() =>
             {
-                foreach (var cook in cooks)
-                {
-                    cook.Start();
-                }
                 while (true)
                 {
+                    Console.WriteLine("*******************");
                     foreach (var cook in cooks)
                     {
                         Console.WriteLine($"{cook.Name} {cook.Wip}");
