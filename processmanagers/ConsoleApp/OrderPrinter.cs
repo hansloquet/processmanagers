@@ -7,7 +7,7 @@ namespace Messages
     {
         public void Handle(Order order)
         {
-            Console.Write(JsonConvert.SerializeObject(order));
+            Console.WriteLine(JsonConvert.SerializeObject(order));
         }
     }
 }
