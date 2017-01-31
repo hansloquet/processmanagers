@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Messages
+namespace ConsoleApp
 {
     public class Waiter
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 
-namespace Messages
+namespace ConsoleApp
 {
     public class OrderPrinter : HandleOrder
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Messages
+namespace ConsoleApp
 {
     public class Order
     {

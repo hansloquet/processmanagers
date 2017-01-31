@@ -1,4 +1,6 @@
-﻿namespace Messages
+﻿using Messages;
+
+namespace ConsoleApp
 {
     public interface HandleOrder
     {
