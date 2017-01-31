@@ -55,6 +55,7 @@
     <Compile Include="Order.cs" />
     <Compile Include="OrderCalculated.cs" />
     <Compile Include="OrderCooked.cs" />
+    <Compile Include="OrderPaid.cs" />
     <Compile Include="OrderPlaced.cs" />
     <Compile Include="OrderPrinter.cs" />
     <Compile Include="Program.cs" />

@@ -38,6 +38,8 @@ namespace ConsoleApp
             topicBasedPubSub.Subscribe<OrderPlaced>(kitchenDispatcher);
             topicBasedPubSub.Subscribe<OrderCooked>(assistantManagerDispatcher);
             topicBasedPubSub.Subscribe<OrderCalculated>(cashier);
+            topicBasedPubSub.Subscribe<OrderPaid>(printer);
+
             //orderpaid
             
             kitchenDispatcher.Start();
@@ -66,6 +68,7 @@ namespace ConsoleApp
                         Console.WriteLine($"{manager.Name} - WIP: {manager.Wip} - DONE: {manager.Done}");
                     }
                     Console.WriteLine($"Cashier - DONE: {cashier.Done}");
+                    Console.WriteLine($"Paid - DONE: {printer.Done} - Total income: {printer.Total}");
                     Thread.Sleep(1000);
                 }
             });
