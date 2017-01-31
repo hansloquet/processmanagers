@@ -24,8 +24,12 @@ namespace ConsoleApp
                 .Select(tuple => new ThreadedHandler(tuple.Item1, tuple.Item2))
                 .ToList();
 
-            var waiter = new Waiter(new RoundRobin(cooks));
 
+            var threadedHandler = new ThreadedHandler("More Fair  Handler", new MoreFairHandler(cooks));
+            var waiter = new Waiter(threadedHandler);
+
+
+            threadedHandler.Start();
             foreach (var cook in cooks)
             {
                 cook.Start();
