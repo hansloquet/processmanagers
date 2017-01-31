@@ -48,6 +48,7 @@
     <Compile Include="Cashier.cs" />
     <Compile Include="Cook.cs" />
     <Compile Include="HandleOrder.cs" />
+    <Compile Include="IOrderPublisher.cs" />
     <Compile Include="IPublisher.cs" />
     <Compile Include="IStartable.cs" />
     <Compile Include="Message.cs" />
@@ -63,6 +64,7 @@
     <Compile Include="Repeater.cs" />
     <Compile Include="RoundRobin.cs" />
     <Compile Include="ThreadedHandler.cs" />
+    <Compile Include="TopicBasedOrderPubSub.cs" />
     <Compile Include="TopicBasedPubSub.cs" />
     <Compile Include="TtlChecker.cs" />
     <Compile Include="Waiter.cs" />

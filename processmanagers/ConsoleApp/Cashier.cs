@@ -1,15 +1,14 @@
-﻿using System.Linq;
-using System.Threading;
+﻿using System.Threading;
 
 namespace ConsoleApp
 {
     public class Cashier : IHandleOrder
     {
-        private readonly IHandleOrder _handleOrder;
+        private readonly IPublisher _publisher;
 
-        public Cashier(IHandleOrder handleOrder)
+        public Cashier(IPublisher publisher)
         {
-            _handleOrder = handleOrder;
+            _publisher = publisher;
         }
 
         public int Done { get; set; }
@@ -17,7 +16,7 @@ namespace ConsoleApp
         public void Handle(Order order)
         {
             Thread.Sleep(1000);
-            _handleOrder.Handle(order);
+            _publisher.Publish(new OrderPaid(order));
             Done++;
         }
     }

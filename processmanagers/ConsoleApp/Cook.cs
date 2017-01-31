@@ -5,9 +5,9 @@ namespace ConsoleApp
     public class Cook : IHandleOrder
     {
         private readonly int _millisecondsTimeout;
-        private readonly IPublisher _publisher;
+        private readonly IOrderPublisher _publisher;
 
-        public Cook(int timeOut, IPublisher publisher)
+        public Cook(int timeOut, IOrderPublisher publisher)
         {
             
             _publisher = publisher;

@@ -9,15 +9,16 @@ namespace ConsoleApp
     {
         public static void Main(string[] args)
         {
-            var topicBasedPubSub = new TopicBasedPubSub();
+            var orderPubSub = new TopicBasedOrderPubSub();
+            var pubSub = new TopicBasedPubSub();
 
             var random = new Random();
+            var cashier = new Cashier(pubSub);
             var printer = new OrderPrinter();
-            var cashier = new Cashier(printer);
 
 
             var assistantManagers = Enumerable.Range(0, 2)
-                .Select(index => new AssistantManager(topicBasedPubSub))
+                .Select(index => new AssistantManager(orderPubSub))
                 .Select(manager => new ThreadedHandler("Assistant", manager))
                 .ToList();
 
@@ -25,20 +26,20 @@ namespace ConsoleApp
 
             var cooks = Enumerable.Range(0, 3)
                 .Select(index => assistantManagerDispatcher)
-                .Select(managers => new Cook(random.Next(1000, 4000), topicBasedPubSub))
+                .Select(managers => new Cook(random.Next(1000, 4000), orderPubSub))
                 .Select(cook => new TtlChecker(cook))
                 .Select(checker => new ThreadedHandler("Cook", checker))
                 .ToList();
 
             var kitchenDispatcher = new ThreadedHandler("More Fair Handler", new MoreFairHandler(cooks));
 
-            var waiter = new Waiter(topicBasedPubSub);
+            var waiter = new Waiter(orderPubSub);
 
             // subscribe
-            topicBasedPubSub.Subscribe<OrderPlaced>(kitchenDispatcher);
-            topicBasedPubSub.Subscribe<OrderCooked>(assistantManagerDispatcher);
-            topicBasedPubSub.Subscribe<OrderCalculated>(cashier);
-            topicBasedPubSub.Subscribe<OrderPaid>(printer);
+            orderPubSub.Subscribe<OrderPlaced>(kitchenDispatcher);
+            orderPubSub.Subscribe<OrderCooked>(assistantManagerDispatcher);
+            orderPubSub.Subscribe<OrderCalculated>(cashier);
+            pubSub.Subscribe(printer);
 
             //orderpaid
             

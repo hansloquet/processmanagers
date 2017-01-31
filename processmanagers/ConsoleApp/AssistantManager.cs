@@ -5,9 +5,9 @@ namespace ConsoleApp
 {
     public class AssistantManager : IHandleOrder
     {
-        private readonly IPublisher _publisher;
+        private readonly IOrderPublisher _publisher;
 
-        public AssistantManager(IPublisher publisher)
+        public AssistantManager(IOrderPublisher publisher)
         {
             _publisher = publisher;
         }

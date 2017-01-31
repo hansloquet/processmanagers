@@ -1,15 +1,14 @@
 ﻿namespace ConsoleApp
 {
-    public class OrderPrinter : IHandleOrder
+    public class OrderPrinter : IHandle<OrderPaid>
     {
-
-        public void Handle(Order order)
-        {
-            Done++;
-            Total += order.Total;
-        }
-
         public int Done { get; set; }
         public int Total { get; set; }
+
+        public void Handle(OrderPaid message)
+        {
+            Done++;
+            Total += message.Order.Total;
+        }
     }
 }

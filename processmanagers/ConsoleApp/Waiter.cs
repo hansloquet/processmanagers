@@ -6,14 +6,14 @@ namespace ConsoleApp
     {
 
 
-        public Waiter(IPublisher publisher)
+        public Waiter(IOrderPublisher publisher)
         {
            
             _publisher = publisher;
         }
 
         private static int _counter = 1;
-        private IPublisher _publisher;
+        private IOrderPublisher _publisher;
 
         public Guid PlaceOrder()
         {
