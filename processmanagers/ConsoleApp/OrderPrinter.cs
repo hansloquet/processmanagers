@@ -5,10 +5,17 @@ namespace ConsoleApp
 {
     public class OrderPrinter : IHandleOrder
     {
+        private readonly Action<string> _action;
+
+        public OrderPrinter(Action<string> action)
+        {
+            _action = action;
+        }
+
         public void Handle(Order order)
         {
-            Console.WriteLine();
-            Console.WriteLine(JsonConvert.SerializeObject(order, Formatting.Indented));
+            _action("");
+            _action(JsonConvert.SerializeObject(order, Formatting.Indented));
         }
     }
 }

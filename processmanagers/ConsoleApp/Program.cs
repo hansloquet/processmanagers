@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace ConsoleApp
 {
@@ -6,53 +9,67 @@ namespace ConsoleApp
     {
         public static void Main(string[] args)
         {
-            var printer = new OrderPrinter();
+            var printer = new OrderPrinter(Console.WriteLine);
             var cashier = new Cashier(printer);
             var assistentManager = new AssistentManager(cashier);
-            var tom = new Cook("Tom", assistentManager);
-            var basil = new Cook("Basil", assistentManager);
+            var tom = new ThreadedHandler(new Cook("Tom", assistentManager));
+            var basil = new ThreadedHandler( new Cook("Basil", assistentManager));
             var frank = new Cook("Frank", assistentManager);
+
             var repeater = new RoundRobin(tom, basil, frank);
+
             var waiter = new Waiter(repeater);
+
+            tom.Start();
+            basil.Start();
+            //fran.Start();
 
             for (var i = 0; i < 10; i++)
             {
                 waiter.PlaceOrder();
             }
+
+            Console.ReadLine();
         }
     }
 
-    public class Repeater : IHandleOrder
+    internal class ThreadedHandler : IHandleOrder, IStartable
     {
-        private readonly IHandleOrder[] _handlers;
+        private readonly IHandleOrder _handler;
+        Queue<Order> orders = new Queue<Order>();
 
-        public Repeater(params IHandleOrder[] handlers)
+        public ThreadedHandler(IHandleOrder handler)
         {
-            _handlers = handlers;
+            _handler = handler;
         }
 
         public void Handle(Order order)
         {
-            foreach (var handler in _handlers)
+            orders.Enqueue(order);
+        }
+
+        public void Start()
+        {
+            new Thread(() =>
             {
-                handler.Handle(order);
-            }
+                while (true)
+                {
+                    if (orders.Count > 0)
+                    {
+                        _handler.Handle(orders.Dequeue());
+                    }
+                    else
+                    {
+                        Thread.Sleep(1);
+                    }
+                }
+            }).Start();
         }
     }
 
-    public class RoundRobin : IHandleOrder
+    internal interface IStartable
+
     {
-        private readonly Queue<IHandleOrder> _handlers;
-
-        public RoundRobin(params IHandleOrder[] handlers)
-        {
-            _handlers = new Queue<IHandleOrder>(handlers);
-        }
-
-        public void Handle(Order order)
-        {
-            _handlers.Peek().Handle(order);
-            _handlers.Enqueue(_handlers.Dequeue());
-        }
+        void Start();
     }
 }
