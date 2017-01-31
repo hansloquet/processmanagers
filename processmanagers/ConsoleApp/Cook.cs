@@ -16,7 +16,7 @@ namespace ConsoleApp
         public void Handle(Order order)
         {
             Thread.Sleep(1000);
-            order.Ingredients.Add("potatoes");
+            order.Ingredients.Add($"potatoes by {_name}");
             _handleOrder.Handle(order);
         }
     }
