@@ -16,9 +16,10 @@ namespace ConsoleApp
 
             var assistentManagers = new RoundRobin(assistentManager1, assistentManager2);
 
-            var tom = new ThreadedHandler("Cook1", new Cook("Tom", assistentManagers));
-            var basil = new ThreadedHandler("Cook2", new Cook("Basil", assistentManagers));
-            var frank = new ThreadedHandler("Cook3", new Cook("Frank", assistentManagers));
+            Random random = new Random();
+            var tom = new ThreadedHandler("Cook1", new Cook("Tom", random.Next(0, 4000), assistentManagers));
+            var basil = new ThreadedHandler("Cook2", new Cook("Basil", random.Next(0, 4000), assistentManagers));
+            var frank = new ThreadedHandler("Cook3", new Cook("Frank", random.Next(0, 4000), assistentManagers));
             var cooks = new RoundRobin(tom, basil, frank);
 
             var waiter = new Waiter(cooks);
@@ -35,7 +36,9 @@ namespace ConsoleApp
                 while (true)
                 {
                     Console.WriteLine($"{tom.Name} {tom.Wip}");
-                    Thread.Sleep(1000);   
+                    Console.WriteLine($"{basil.Name} {basil.Wip}");
+                    Console.WriteLine($"{frank.Name} {frank.Wip}");
+                    Thread.Sleep(1000);
                 }
             });
 

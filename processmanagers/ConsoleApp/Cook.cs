@@ -6,16 +6,18 @@ namespace ConsoleApp
     {
         private readonly string _name;
         private readonly IHandleOrder _handleOrder;
+        private readonly int _millisecondsTimeout;
 
-        public Cook(string name, IHandleOrder handleOrder)
+        public Cook(string name, int timeOut, IHandleOrder handleOrder)
         {
             _name = name;
             _handleOrder = handleOrder;
+            _millisecondsTimeout = timeOut;
         }
 
         public void Handle(Order order)
         {
-            Thread.Sleep(1000);
+            Thread.Sleep(_millisecondsTimeout);
             order.Ingredients.Add($"potatoes by {_name}");
             _handleOrder.Handle(order);
         }
