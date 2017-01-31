@@ -22,7 +22,7 @@ namespace ConsoleApp
             var cooks = Enumerable.Range(0, 3)
                 .Select(index => new RoundRobin(assistantManagers))
                 .Select(managers => new Cook(random.Next(0, 4000), managers))
-//                .Select(cook => new TtlChecker(cook))
+                .Select(cook => new TtlChecker(cook))
                 .Select(checker => new ThreadedHandler("Cook", checker))
                 .ToList();
 
