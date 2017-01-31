@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace processmanagers
+namespace Messages
 {
     public class Waiter
     {
