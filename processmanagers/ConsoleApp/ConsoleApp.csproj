@@ -52,7 +52,7 @@
     <Compile Include="IPublisher.cs" />
     <Compile Include="IStartable.cs" />
     <Compile Include="Message.cs" />
-    <Compile Include="MoreFairHandler.cs" />
+    <Compile Include="MoreFairOrderHandler.cs" />
     <Compile Include="Order.cs" />
     <Compile Include="OrderCalculated.cs" />
     <Compile Include="OrderCooked.cs" />
