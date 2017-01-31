@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "processmanagers", "processmanagers\processmanagers.csproj", "{77D65AE9-8655-4E13-98D7-FA053A99926E}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messages", "Messages\Messages.csproj", "{D916292F-F182-487E-BFFF-094D087B11E3}"
 EndProject
 Global
@@ -13,10 +11,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{77D65AE9-8655-4E13-98D7-FA053A99926E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{77D65AE9-8655-4E13-98D7-FA053A99926E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{77D65AE9-8655-4E13-98D7-FA053A99926E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{77D65AE9-8655-4E13-98D7-FA053A99926E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D916292F-F182-487E-BFFF-094D087B11E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D916292F-F182-487E-BFFF-094D087B11E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D916292F-F182-487E-BFFF-094D087B11E3}.Release|Any CPU.ActiveCfg = Release|Any CPU

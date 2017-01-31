@@ -16,14 +16,4 @@ namespace processmanagers
         public int Tax { get; set; }
         public int Total { get; set; }
     }
-
-    interface HandleOrder
-    {
-        void Handle(Order order);
-    }
-
-    public class OrderPrinter : HandleOrder
-    {
-        
-    }
 }
