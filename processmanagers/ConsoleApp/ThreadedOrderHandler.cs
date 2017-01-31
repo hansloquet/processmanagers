@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace ConsoleApp
 {
-    internal class ThreadedHandler : IHandleOrder, IStartable
+    internal class ThreadedOrderHandler : IHandleOrder, IStartable
     {
         private static int _counter;
         public int Wip => orders.Count;
@@ -14,7 +14,7 @@ namespace ConsoleApp
         private readonly IHandleOrder _handler;
         readonly ConcurrentQueue<Order> orders = new ConcurrentQueue<Order>();
 
-        public ThreadedHandler(string name, IHandleOrder handler)
+        public ThreadedOrderHandler(string name, IHandleOrder handler)
         {
             Name = $"{name} {++_counter}";
             _handler = handler;

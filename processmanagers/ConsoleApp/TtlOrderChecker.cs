@@ -2,11 +2,11 @@
 
 namespace ConsoleApp
 {
-    internal class TtlChecker : IHandleOrder
+    internal class TtlOrderChecker : IHandleOrder
     {
         private readonly IHandleOrder _handler;
 
-        public TtlChecker(IHandleOrder handler)
+        public TtlOrderChecker(IHandleOrder handler)
         {
             _handler = handler;
         }

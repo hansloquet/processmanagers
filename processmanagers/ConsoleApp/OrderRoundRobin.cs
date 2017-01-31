@@ -2,16 +2,16 @@
 
 namespace ConsoleApp
 {
-    public class RoundRobin : IHandleOrder
+    public class OrderRoundRobin : IHandleOrder
     {
         private readonly Queue<IHandleOrder> _handlers;
 
-        public RoundRobin(params IHandleOrder[] handlers)
+        public OrderRoundRobin(params IHandleOrder[] handlers)
         {
             _handlers = new Queue<IHandleOrder>(handlers);
         }
 
-        public RoundRobin(IEnumerable<IHandleOrder> handlers)
+        public OrderRoundRobin(IEnumerable<IHandleOrder> handlers)
         {
             _handlers = new Queue<IHandleOrder>(handlers);
         }

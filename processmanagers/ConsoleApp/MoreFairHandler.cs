@@ -5,11 +5,11 @@ namespace ConsoleApp
 {
     internal class MoreFairHandler : IHandleOrder
     {
-        private readonly Queue<ThreadedHandler> _handlers;
+        private readonly Queue<ThreadedOrderHandler> _handlers;
 
-        public MoreFairHandler(IEnumerable<ThreadedHandler> handlers)
+        public MoreFairHandler(IEnumerable<ThreadedOrderHandler> handlers)
         {
-            _handlers = new Queue<ThreadedHandler>(handlers);
+            _handlers = new Queue<ThreadedOrderHandler>(handlers);
         }
 
         public void Handle(Order order)

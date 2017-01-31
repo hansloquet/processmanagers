@@ -19,19 +19,19 @@ namespace ConsoleApp
 
             var assistantManagers = Enumerable.Range(0, 2)
                 .Select(index => new AssistantManager(pubSub))
-                .Select(manager => new ThreadedHandler("Assistant", manager))
+                .Select(manager => new ThreadedOrderHandler("Assistant", manager))
                 .ToList();
 
-           var assistantManagerDispatcher = new RoundRobin(assistantManagers);
+           var assistantManagerDispatcher = new OrderRoundRobin(assistantManagers);
 
             var cooks = Enumerable.Range(0, 3)
                 .Select(index => assistantManagerDispatcher)
                 .Select(managers => new Cook(random.Next(1000, 4000), orderPubSub))
-                .Select(cook => new TtlChecker(cook))
-                .Select(checker => new ThreadedHandler("Cook", checker))
+                .Select(cook => new TtlOrderChecker(cook))
+                .Select(checker => new ThreadedOrderHandler("Cook", checker))
                 .ToList();
 
-            var kitchenDispatcher = new ThreadedHandler("More Fair Handler", new MoreFairHandler(cooks));
+            var kitchenDispatcher = new ThreadedOrderHandler("More Fair Handler", new MoreFairHandler(cooks));
 
             var waiter = new Waiter(orderPubSub);
 
