@@ -35,7 +35,7 @@ namespace ConsoleApp
             var waiter = new Waiter(topicBasedPubSub);
 
             // subscribe
-            topicBasedPubSub.Subscribe("OrderPlaced", kitchenDispatcher);
+            topicBasedPubSub.Subscribe<OrderPlaced>(kitchenDispatcher);
             topicBasedPubSub.Subscribe("OrderCooked", assistantManagerDispatcher);
 
             kitchenDispatcher.Start();

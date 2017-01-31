@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace ConsoleApp
 {
@@ -35,6 +36,11 @@ namespace ConsoleApp
         public void Publish(OrderPlaced orderPlaced)
         {
             Publish(orderPlaced.GetType().Name, orderPlaced.Order);
+        }
+
+        internal void Subscribe<T>(IHandleOrder subscriber)
+        {
+            Subscribe(typeof(T).Name, subscriber);
         }
     }
 }
