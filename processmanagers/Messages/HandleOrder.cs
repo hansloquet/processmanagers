@@ -1,4 +1,4 @@
-﻿namespace processmanagers
+﻿namespace Messages
 {
     public interface HandleOrder
     {

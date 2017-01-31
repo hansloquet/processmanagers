@@ -1,10 +1,13 @@
-﻿namespace processmanagers
+﻿using System;
+using Newtonsoft.Json;
+
+namespace Messages
 {
     public class OrderPrinter : HandleOrder
     {
         public void Handle(Order order)
         {
-            throw new System.NotImplementedException();
+            Console.Write(JsonConvert.SerializeObject(order));
         }
     }
 }
