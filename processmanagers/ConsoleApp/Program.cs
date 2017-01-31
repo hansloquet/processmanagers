@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,8 +23,12 @@ namespace ConsoleApp
 //                .Select(manager => new ThreadedOrderHandler("Assistant", manager))
 //                .ToList();
 
-//           var assistantManagerDispatcher = new OrderRoundRobin(assistantManagers);
-            var assistantManager = new ThreadedHandler<OrderCooked>("Assistant", new AssistantManager(pubSub));
+            var assistantManagers = new List<IHandle<OrderCooked>>
+            {
+                new ThreadedHandler<OrderCooked>("Assistant 1", new AssistantManager(pubSub)),
+                new ThreadedHandler<OrderCooked>("Assistant 2", new AssistantManager(pubSub))
+            };
+            var assistantManager = new RoundRobin<OrderCooked>(assistantManagers);
 
             var cooks = Enumerable.Range(0, 3)
                 .Select(index => assistantManager)
@@ -49,11 +54,11 @@ namespace ConsoleApp
             {
                 cook.Start();
             }
-                              
-//            foreach (var assistentManager in assistantManagers)
-//            {
-                assistantManager.Start();
-//            }
+
+            foreach (var manager in assistantManagers.Cast<ThreadedHandler<OrderCooked>>())
+            {
+                manager.Start();
+            }
 
             Task.Factory.StartNew(() =>
             {
@@ -65,10 +70,10 @@ namespace ConsoleApp
                     {
                         Console.WriteLine($"{cook.Name} - WIP: {cook.Wip} - DONE: {cook.Done}");
                     }
-//                    foreach (var manager in assistantManagers)
-//                    {
-//                        Console.WriteLine($"{manager.Name} - WIP: {manager.Wip} - DONE: {manager.Done}");
-//                    }
+                    foreach (var manager in assistantManagers.Cast<ThreadedHandler<OrderCooked>>())
+                    {
+                        Console.WriteLine($"{manager.Name} - WIP: {manager.Wip} - DONE: {manager.Done}");
+                    }
                     Console.WriteLine($"Cashier - DONE: {cashier.Done}");
                     Console.WriteLine($"Paid - DONE: {printer.Done} - Total income: {printer.Total}");
                     Thread.Sleep(1000);

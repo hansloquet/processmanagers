@@ -2,6 +2,22 @@
 
 namespace ConsoleApp
 {
+    internal class RoundRobin<T> : IHandle<T>
+    {
+        private readonly Queue<IHandle<T>> _handlers ;
+
+        public RoundRobin(List<IHandle<T>> handlers)
+        {
+            _handlers = new Queue<IHandle<T>>(handlers);
+        }
+
+        public void Handle(T message)
+        {
+            var handler = _handlers.Dequeue();
+            handler.Handle(message);
+            _handlers.Enqueue(handler);
+        }
+    }
     public class OrderRoundRobin : IHandleOrder
     {
         private readonly Queue<IHandleOrder> _handlers;
