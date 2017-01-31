@@ -3,6 +3,6 @@
     public interface IPublisher
     {
         void Publish(string topic, Order order);
-        void Publish(OrderPlaced orderPlaced);
+        void Publish<T>(Order order);
     }
 }

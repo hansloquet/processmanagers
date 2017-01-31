@@ -18,7 +18,22 @@ namespace ConsoleApp
         {
             Thread.Sleep(_millisecondsTimeout);
             order.Ingredients.Add($"potatoes");
-            _publisher.Publish("OrderCooked", order);
+            _publisher.Publish<OrderCooked>(order);
+            //_publisher.Publish("OrderCooked", order);
         }
+    }
+
+    public class OrderCooked : Message
+    {
+        public Order Order { get; }
+
+        public OrderCooked(Order order)
+        {
+            Order = order;
+        }
+    }
+
+    public class Message
+    {
     }
 }

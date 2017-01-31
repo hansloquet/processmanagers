@@ -20,7 +20,7 @@ namespace ConsoleApp
             var order = new Order {TableNumber = _counter++};
             order.AddItem(3, "French Fries", 1);
     
-            _publisher.Publish(new OrderPlaced(order));
+            _publisher.Publish<OrderPlaced>(order);
             return Guid.Empty;
         }
     }

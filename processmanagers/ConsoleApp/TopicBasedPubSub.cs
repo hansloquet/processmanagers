@@ -33,9 +33,9 @@ namespace ConsoleApp
 
         }
 
-        public void Publish(OrderPlaced orderPlaced)
+        public void Publish<T>(Order order)
         {
-            Publish(orderPlaced.GetType().Name, orderPlaced.Order);
+            Publish(typeof(T).Name, order);
         }
 
         internal void Subscribe<T>(IHandleOrder subscriber)

@@ -36,6 +36,7 @@ namespace ConsoleApp
 
             // subscribe
             topicBasedPubSub.Subscribe<OrderPlaced>(kitchenDispatcher);
+            
             topicBasedPubSub.Subscribe("OrderCooked", assistantManagerDispatcher);
 
             kitchenDispatcher.Start();
