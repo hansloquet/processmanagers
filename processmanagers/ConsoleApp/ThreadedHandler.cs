@@ -1,12 +1,14 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace ConsoleApp
 {
     internal class ThreadedHandler : IHandleOrder, IStartable
     {
         private readonly IHandleOrder _handler;
-        Queue<Order> orders = new Queue<Order>();
+        readonly Queue<Order> orders = new Queue<Order>();
 
         public ThreadedHandler(IHandleOrder handler)
         {
@@ -20,20 +22,22 @@ namespace ConsoleApp
 
         public void Start()
         {
-            new Thread(() =>
-            {
-                while (true)
-                {
-                    if (orders.Count > 0)
+            Task.Factory
+                .StartNew(() =>
                     {
-                        _handler.Handle(orders.Dequeue());
-                    }
-                    else
-                    {
-                        Thread.Sleep(1);
-                    }
-                }
-            }).Start();
+                        while (true)
+                        {
+                            if (orders.Any())
+                            {
+                                _handler.Handle(order: orders.Dequeue());
+                            }
+                            else
+                            {
+                                Thread.Sleep(millisecondsTimeout: 1);
+                            }
+                        }
+                    }, TaskCreationOptions.LongRunning);
+
         }
     }
 }
