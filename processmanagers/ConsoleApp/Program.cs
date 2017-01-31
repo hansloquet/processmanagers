@@ -13,31 +13,36 @@ namespace ConsoleApp
 
             var assistentManager1 = new ThreadedHandler("Assistant1", new AssistantManager(cashier));
             var assistentManager2 = new ThreadedHandler("Assistant2", new AssistantManager(cashier));
-
             var assistentManagers = new RoundRobin(assistentManager1, assistentManager2);
 
-            Random random = new Random();
-            var tom = new ThreadedHandler("Cook1", new Cook("Tom", random.Next(0, 4000), assistentManagers));
-            var basil = new ThreadedHandler("Cook2", new Cook("Basil", random.Next(0, 4000), assistentManagers));
-            var frank = new ThreadedHandler("Cook3", new Cook("Frank", random.Next(0, 4000), assistentManagers));
-            var cooks = new RoundRobin(tom, basil, frank);
+            var random = new Random();
 
-            var waiter = new Waiter(cooks);
+            var cooks = new[]
+            {
+                new ThreadedHandler("Tom", new Cook(random.Next(0, 4000), assistentManagers)),
+                new ThreadedHandler("Basil", new Cook(random.Next(0, 4000), assistentManagers)),
+                new ThreadedHandler("Frank", new Cook(random.Next(0, 4000), assistentManagers))
+            };
+
+            var cookDispatcher = new RoundRobin(cooks);
+
+            var waiter = new Waiter(cookDispatcher);
 
             assistentManager1.Start();
             assistentManager2.Start();
 
-            tom.Start();
-            basil.Start();
-            frank.Start();
-
             Task.Factory.StartNew(() =>
             {
+                foreach (var cook in cooks)
+                {
+                    cook.Start();
+                }
                 while (true)
                 {
-                    Console.WriteLine($"{tom.Name} {tom.Wip}");
-                    Console.WriteLine($"{basil.Name} {basil.Wip}");
-                    Console.WriteLine($"{frank.Name} {frank.Wip}");
+                    foreach (var cook in cooks)
+                    {
+                        Console.WriteLine($"{cook.Name} {cook.Wip}");
+                    }
                     Thread.Sleep(1000);
                 }
             });
