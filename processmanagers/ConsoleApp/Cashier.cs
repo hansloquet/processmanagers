@@ -2,7 +2,7 @@
 
 namespace ConsoleApp
 {
-    public class Cashier : IHandleOrder
+    public class Cashier : IHandleOrder, IHandle<OrderCalculated>
     {
         private readonly IPublisher _publisher;
 
@@ -18,6 +18,11 @@ namespace ConsoleApp
             Thread.Sleep(1000);
             _publisher.Publish(new OrderPaid(order));
             Done++;
+        }
+
+        public void Handle(OrderCalculated message)
+        {
+            Handle(message.Order);
         }
     }
 }

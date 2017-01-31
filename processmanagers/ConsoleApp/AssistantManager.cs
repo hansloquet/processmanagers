@@ -5,9 +5,9 @@ namespace ConsoleApp
 {
     public class AssistantManager : IHandleOrder
     {
-        private readonly IOrderPublisher _publisher;
+        private readonly IPublisher _publisher;
 
-        public AssistantManager(IOrderPublisher publisher)
+        public AssistantManager(IPublisher publisher)
         {
             _publisher = publisher;
         }
@@ -19,7 +19,7 @@ namespace ConsoleApp
 
             Thread.Sleep(1000);
 
-            _publisher.Publish<OrderCalculated>(order);
+            _publisher.Publish(new OrderCalculated(order));
         }
     }
 }

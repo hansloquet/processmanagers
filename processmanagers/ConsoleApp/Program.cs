@@ -18,7 +18,7 @@ namespace ConsoleApp
 
 
             var assistantManagers = Enumerable.Range(0, 2)
-                .Select(index => new AssistantManager(orderPubSub))
+                .Select(index => new AssistantManager(pubSub))
                 .Select(manager => new ThreadedHandler("Assistant", manager))
                 .ToList();
 
@@ -38,7 +38,7 @@ namespace ConsoleApp
             // subscribe
             orderPubSub.Subscribe<OrderPlaced>(kitchenDispatcher);
             orderPubSub.Subscribe<OrderCooked>(assistantManagerDispatcher);
-            orderPubSub.Subscribe<OrderCalculated>(cashier);
+            pubSub.Subscribe(cashier);
             pubSub.Subscribe(printer);
 
             //orderpaid
