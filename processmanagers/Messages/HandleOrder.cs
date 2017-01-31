@@ -1,6 +1,6 @@
 ﻿namespace processmanagers
 {
-    interface HandleOrder
+    public interface HandleOrder
     {
         void Handle(Order order);
     }
