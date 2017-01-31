@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 
 namespace ConsoleApp
 {
@@ -9,18 +8,24 @@ namespace ConsoleApp
         {
             var printer = new OrderPrinter();
             var cashier = new Cashier(printer);
-            var assistentManager = new AssistentManager(cashier);
-            var tom = new ThreadedHandler(new Cook("Tom", assistentManager));
-            var basil = new ThreadedHandler( new Cook("Basil", assistentManager));
-            var frank = new ThreadedHandler( new Cook("Frank", assistentManager));
 
-            var repeater = new RoundRobin(tom, basil, frank);
+            var assistentManager1 = new ThreadedHandler(new AssistentManager(cashier));
+            var assistentManager2 = new ThreadedHandler(new AssistentManager(cashier));
+            var assistentManagers = new RoundRobin(assistentManager1, assistentManager2);
 
-            var waiter = new Waiter(repeater);
+            var tom = new ThreadedHandler(new Cook("Tom", assistentManagers));
+            var basil = new ThreadedHandler( new Cook("Basil", assistentManagers));
+            var frank = new ThreadedHandler( new Cook("Frank", assistentManagers));
+            var cooks = new RoundRobin(tom, basil, frank);
+
+            var waiter = new Waiter(cooks);
 
             tom.Start();
             basil.Start();
             frank.Start();
+
+            assistentManager1.Start();
+            assistentManager2.Start();
 
             for (var i = 0; i < 10; i++)
             {
@@ -32,7 +37,6 @@ namespace ConsoleApp
     }
 
     internal interface IStartable
-
     {
         void Start();
     }
