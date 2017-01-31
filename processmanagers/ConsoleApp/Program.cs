@@ -36,9 +36,10 @@ namespace ConsoleApp
 
             // subscribe
             topicBasedPubSub.Subscribe<OrderPlaced>(kitchenDispatcher);
+            topicBasedPubSub.Subscribe<OrderCooked>(assistantManagerDispatcher);
             
-            topicBasedPubSub.Subscribe("OrderCooked", assistantManagerDispatcher);
-
+            //orderpaid
+            
             kitchenDispatcher.Start();
             foreach (var cook in cooks)
             {
@@ -64,7 +65,7 @@ namespace ConsoleApp
                     {
                         Console.WriteLine($"{manager.Name} - WIP: {manager.Wip} - DONE: {manager.Done}");
                     }
-
+                    Console.WriteLine($"Cashier - DONE: {cashier.Done}");
                     Thread.Sleep(1000);
                 }
             });

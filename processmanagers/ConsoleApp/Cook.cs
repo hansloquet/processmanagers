@@ -22,18 +22,4 @@ namespace ConsoleApp
             //_publisher.Publish("OrderCooked", order);
         }
     }
-
-    public class OrderCooked : Message
-    {
-        public Order Order { get; }
-
-        public OrderCooked(Order order)
-        {
-            Order = order;
-        }
-    }
-
-    public class Message
-    {
-    }
 }

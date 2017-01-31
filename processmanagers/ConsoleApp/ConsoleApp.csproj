@@ -50,8 +50,10 @@
     <Compile Include="HandleOrder.cs" />
     <Compile Include="IPublisher.cs" />
     <Compile Include="IStartable.cs" />
+    <Compile Include="Message.cs" />
     <Compile Include="MoreFairHandler.cs" />
     <Compile Include="Order.cs" />
+    <Compile Include="OrderCooked.cs" />
     <Compile Include="OrderPlaced.cs" />
     <Compile Include="OrderPrinter.cs" />
     <Compile Include="Program.cs" />

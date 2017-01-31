@@ -13,6 +13,8 @@ namespace ConsoleApp
     
         }
 
+        public int Done { get; set; }
+
         public void Handle(Order order)
         {
             order.SubTotal = order.Items.Sum(item => item.UnitPrice + item.Qty);
@@ -21,6 +23,7 @@ namespace ConsoleApp
 
             Thread.Sleep(1000);
             _handleOrder.Handle(order);
+            Done++;
         }
     }
 }
