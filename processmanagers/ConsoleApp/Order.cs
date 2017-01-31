@@ -13,7 +13,7 @@ namespace ConsoleApp
         public int Tax { get; set; }
         public int Total { get; set; }
         public TimeSpan CookingTime { get; set; }
-        public DateTime DueTime { get; set; } = DateTime.Now.Add(TimeSpan.FromSeconds(5));
+        public DateTime DueTime { get; set; } = DateTime.Now.Add(TimeSpan.FromSeconds(10));
 
         public void AddItem(int qty, string description, int unitPrice)
         {

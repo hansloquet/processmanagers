@@ -21,20 +21,24 @@ namespace ConsoleApp
                 .Select(manager => new ThreadedHandler("Assistant", manager))
                 .ToList();
 
+           var assistantManagerDispatcher = new RoundRobin(assistantManagers);
+
             var cooks = Enumerable.Range(0, 3)
-                .Select(index => new RoundRobin(assistantManagers))
-                .Select(managers => new Cook(random.Next(0, 4000), managers))
+                .Select(index => assistantManagerDispatcher)
+                .Select(managers => new Cook(random.Next(1000, 4000), topicBasedPubSub))
                 .Select(cook => new TtlChecker(cook))
                 .Select(checker => new ThreadedHandler("Cook", checker))
                 .ToList();
 
-            var orderDispatcher = new ThreadedHandler("More Fair Handler", new MoreFairHandler(cooks));
-            topicBasedPubSub.Subscribe("OrderPlaced", orderDispatcher);
+            var kitchenDispatcher = new ThreadedHandler("More Fair Handler", new MoreFairHandler(cooks));
 
             var waiter = new Waiter(topicBasedPubSub);
 
+            // subscribe
+            topicBasedPubSub.Subscribe("OrderPlaced", kitchenDispatcher);
+            topicBasedPubSub.Subscribe("OrderCooked", assistantManagerDispatcher);
 
-            orderDispatcher.Start();
+            kitchenDispatcher.Start();
             foreach (var cook in cooks)
             {
                 cook.Start();
@@ -50,7 +54,7 @@ namespace ConsoleApp
                 while (true)
                 {
                     Console.WriteLine("*******************");
-                    Console.WriteLine($"{orderDispatcher.Name} {orderDispatcher.Wip}");
+                    Console.WriteLine($"{kitchenDispatcher.Name} {kitchenDispatcher.Wip}");
                     foreach (var cook in cooks)
                     {
                         Console.WriteLine($"{cook.Name} - WIP: {cook.Wip} - DONE: {cook.Done}");

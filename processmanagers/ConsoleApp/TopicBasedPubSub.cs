@@ -9,7 +9,8 @@ namespace ConsoleApp
 
         public void Publish(string topic, Order order)
         {
-            _topics[topic].ForEach(subscriber => subscriber.Handle(order));
+            if(_topics.ContainsKey(topic))
+                _topics[topic].ForEach(subscriber => subscriber.Handle(order));
         }
 
         public void Subscribe(string topic, IHandleOrder subscriber)
