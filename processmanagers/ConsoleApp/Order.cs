@@ -6,12 +6,13 @@ namespace ConsoleApp
     public class Order
     {
         public int TableNumber { get; set; }
-        public List<OrderItem> Items { get; set; }
+        public List<OrderItem> Items { get; set; } = new List<OrderItem>();
         public int SubTotal { get; set; }
         public Guid OrderId { get; set; }
-        public List<object> Ingredients { get; set; } = new List<object>();
+        public List<string> Ingredients { get; set; } = new List<string>();
         public int Tax { get; set; }
         public int Total { get; set; }
+        public TimeSpan CookingTime { get; set; }
 
         public void AddItem(int qty, string description, int unitPrice)
         {

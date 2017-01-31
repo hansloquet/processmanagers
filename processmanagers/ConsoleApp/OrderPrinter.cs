@@ -7,7 +7,8 @@ namespace ConsoleApp
     {
         public void Handle(Order order)
         {
-            Console.WriteLine(JsonConvert.SerializeObject(order));
+            Console.WriteLine();
+            Console.WriteLine(JsonConvert.SerializeObject(order, Formatting.Indented));
         }
     }
 }
