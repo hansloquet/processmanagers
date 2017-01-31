@@ -2,7 +2,7 @@
 
 namespace ConsoleApp
 {
-    public class Cook : IHandleOrder
+    public class Cook : IHandleOrder, IHandle<OrderPlaced>
     {
         private readonly int _millisecondsTimeout;
         private readonly IPublisher _pubSub;
@@ -18,6 +18,11 @@ namespace ConsoleApp
             Thread.Sleep(_millisecondsTimeout);
             order.Ingredients.Add($"potatoes");
             _pubSub.Publish(new OrderCooked(order));
+        }
+
+        public void Handle(OrderPlaced message)
+        {
+            Handle(message.Order);
         }
     }
 }

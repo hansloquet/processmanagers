@@ -23,30 +23,32 @@ namespace ConsoleApp
                 .ToList();
             var assistantManager = new RoundRobin<OrderCooked>(assistantManagers);
 
-            var cooks = Enumerable.Range(0, 3)
-                .Select(index => assistantManager)
-                .Select(managers => new Cook(random.Next(1000, 4000), pubSub))
-                .Select(cook => new TtlOrderChecker(cook))
-                .Select(checker => new ThreadedOrderHandler("Cook", checker))
-                .ToList();
+//            var cooks = Enumerable.Range(0, 3)
+//                .Select(index => assistantManager)
+//                .Select(managers => new Cook(random.Next(1000, 4000), pubSub))
+//                .Select(cook => new TtlOrderChecker(cook))
+//                .Select(checker => new ThreadedOrderHandler("Cook", checker))
+//                .ToList();
 
-            var kitchenDispatcher = new ThreadedOrderHandler("More Fair Handler", new MoreFairHandler(cooks));
+//            var kitchenDispatcher = new ThreadedOrderHandler("More Fair Handler", new MoreFairHandler(cooks));
+            var cook = new ThreadedHandler<OrderPlaced>("Cook", new Cook(500, pubSub));
 
-            var waiter = new Waiter(orderPubSub);
+            var waiter = new Waiter(pubSub);
 
             // subscribe
-            orderPubSub.Subscribe<OrderPlaced>(kitchenDispatcher);
+//            orderPubSub.Subscribe<OrderPlaced>(new Cook(500, pubSub));
+            pubSub.Subscribe(cook);
             pubSub.Subscribe(assistantManager);
             pubSub.Subscribe(cashier);
             pubSub.Subscribe(printer);
 
             //orderpaid
             
-            kitchenDispatcher.Start();
-            foreach (var cook in cooks)
-            {
+//            kitchenDispatcher.Start();
+//            foreach (var cook in cooks)
+//            {
                 cook.Start();
-            }
+//            }
 
             foreach (var manager in assistantManagers.Cast<ThreadedHandler<OrderCooked>>())
             {
@@ -58,11 +60,11 @@ namespace ConsoleApp
                 while (true)
                 {
                     Console.WriteLine("*******************");
-                    Console.WriteLine($"{kitchenDispatcher.Name} {kitchenDispatcher.Wip}");
-                    foreach (var cook in cooks)
-                    {
+//                    Console.WriteLine($"{kitchenDispatcher.Name} {kitchenDispatcher.Wip}");
+//                    foreach (var cook in cooks)
+//                    {
                         Console.WriteLine($"{cook.Name} - WIP: {cook.Wip} - DONE: {cook.Done}");
-                    }
+//                    }
                     foreach (var manager in assistantManagers.Cast<ThreadedHandler<OrderCooked>>())
                     {
                         Console.WriteLine($"{manager.Name} - WIP: {manager.Wip} - DONE: {manager.Done}");
