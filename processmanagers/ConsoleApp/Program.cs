@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,48 +10,52 @@ namespace ConsoleApp
     {
         public static void Main(string[] args)
         {
-            var topicBasedPubSub = new TopicBasedPubSub();
+            var pubSub = new TopicBasedPubSub();
 
             var random = new Random();
+            var cashier = new Cashier(pubSub);
             var printer = new OrderPrinter();
-            var cashier = new Cashier(printer);
-
 
             var assistantManagers = Enumerable.Range(0, 2)
-                .Select(index => new AssistantManager(topicBasedPubSub))
-                .Select(manager => new ThreadedHandler("Assistant", manager))
+                .Select(index => new AssistantManager(pubSub))
+                .Select(manager => new ThreadedHandler<OrderCooked>("Assistant", manager))
                 .ToList();
+            var assistantManager = new RoundRobin<OrderCooked>(assistantManagers);
 
-           var assistantManagerDispatcher = new RoundRobin(assistantManagers);
+//            var cooks = Enumerable.Range(0, 3)
+//                .Select(index => assistantManager)
+//                .Select(managers => new Cook(random.Next(1000, 4000), pubSub))
+//                .Select(cook => new TtlOrderChecker(cook))
+//                .Select(checker => new ThreadedOrderHandler("Cook", checker))
+//                .ToList();
 
             var cooks = Enumerable.Range(0, 3)
-                .Select(index => assistantManagerDispatcher)
-                .Select(managers => new Cook(random.Next(1000, 4000), topicBasedPubSub))
-                .Select(cook => new TtlChecker(cook))
-                .Select(checker => new ThreadedHandler("Cook", checker))
+                .Select(index => assistantManager)
+                .Select(managers => new Cook(random.Next(0, 4000), pubSub))
+                .Select(cook => new TtlChecker<OrderPlaced>(cook))
+                .Select(c => new ThreadedHandler<OrderPlaced>("Cook", c))
                 .ToList();
+            var kitchenDispatcher = new ThreadedHandler<OrderPlaced>("Kitchen Dispatcher", new MoreFairHandler<OrderPlaced>(cooks));
 
-            var kitchenDispatcher = new ThreadedHandler("More Fair Handler", new MoreFairHandler(cooks));
-
-            var waiter = new Waiter(topicBasedPubSub);
+            var waiter = new Waiter(pubSub);
 
             // subscribe
-            topicBasedPubSub.Subscribe<OrderPlaced>(kitchenDispatcher);
-            topicBasedPubSub.Subscribe<OrderCooked>(assistantManagerDispatcher);
-            topicBasedPubSub.Subscribe<OrderCalculated>(cashier);
-            topicBasedPubSub.Subscribe<OrderPaid>(printer);
+            pubSub.Subscribe(kitchenDispatcher);
+            pubSub.Subscribe(assistantManager);
+            pubSub.Subscribe(cashier);
+            pubSub.Subscribe(printer);
 
             //orderpaid
             
             kitchenDispatcher.Start();
-            foreach (var cook in cooks)
+            foreach (var c in cooks)
             {
-                cook.Start();
+                c.Start();
             }
-                              
-            foreach (var assistentManager in assistantManagers)
+
+            foreach (var manager in assistantManagers)
             {
-                assistentManager.Start();
+                manager.Start();
             }
 
             Task.Factory.StartNew(() =>
@@ -59,9 +64,9 @@ namespace ConsoleApp
                 {
                     Console.WriteLine("*******************");
                     Console.WriteLine($"{kitchenDispatcher.Name} {kitchenDispatcher.Wip}");
-                    foreach (var cook in cooks)
+                    foreach (var c in cooks)
                     {
-                        Console.WriteLine($"{cook.Name} - WIP: {cook.Wip} - DONE: {cook.Done}");
+                        Console.WriteLine($"{c.Name} - WIP: {c.Wip} - DONE: {c.Done}");
                     }
                     foreach (var manager in assistantManagers)
                     {
@@ -71,7 +76,7 @@ namespace ConsoleApp
                     Console.WriteLine($"Paid - DONE: {printer.Done} - Total income: {printer.Total}");
                     Thread.Sleep(1000);
                 }
-            });
+            }, TaskCreationOptions.LongRunning);
 
             for (var i = 0; i < 100; i++)
             {

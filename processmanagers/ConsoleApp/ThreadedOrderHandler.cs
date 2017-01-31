@@ -4,25 +4,24 @@ using System.Threading.Tasks;
 
 namespace ConsoleApp
 {
-    internal class ThreadedHandler : IHandleOrder, IStartable
+    internal class ThreadedHandler<TMessage> : IHandle<TMessage>, IStartable
     {
-        private static int _counter;
-        public int Wip => orders.Count;
+        public int Wip => _messages.Count;
         public string Name { get; private set; }
         public int Done { get; private set; }
 
-        private readonly IHandleOrder _handler;
-        readonly ConcurrentQueue<Order> orders = new ConcurrentQueue<Order>();
+        private readonly IHandle<TMessage> _handler;
+        readonly ConcurrentQueue<TMessage> _messages = new ConcurrentQueue<TMessage>();
 
-        public ThreadedHandler(string name, IHandleOrder handler)
+        public ThreadedHandler(string name, IHandle<TMessage> handler)
         {
-            Name = $"{name} {++_counter}";
             _handler = handler;
+            Name = name;
         }
 
-        public void Handle(Order order)
+        public void Handle(TMessage message)
         {
-            orders.Enqueue(order);
+            _messages.Enqueue(message);
         }
 
         public void Start()
@@ -32,10 +31,10 @@ namespace ConsoleApp
                     {
                         while (true)
                         {
-                            Order order;
-                            if (orders.TryDequeue(out order))
+                            TMessage message;
+                            if (_messages.TryDequeue(out message))
                             {
-                                _handler.Handle(order: order);
+                                _handler.Handle(message);
                                 Done++;
                             }
                             else
@@ -44,7 +43,6 @@ namespace ConsoleApp
                             }
                         }
                     }, TaskCreationOptions.LongRunning);
-
         }
     }
 }

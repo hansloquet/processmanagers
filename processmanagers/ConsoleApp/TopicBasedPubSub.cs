@@ -5,42 +5,46 @@ namespace ConsoleApp
 {
     internal class TopicBasedPubSub : IPublisher
     {
-        private readonly Dictionary<string, List<IHandleOrder>> _topics = new Dictionary<string, List<IHandleOrder>>();
+        private readonly Dictionary<Type, List<IHandler>> _handlers;
         private readonly object _lock = new object();
 
-        public void Publish(string topic, Order order)
+        public TopicBasedPubSub()
         {
-            if(_topics.ContainsKey(topic))
-                _topics[topic].ForEach(subscriber => subscriber.Handle(order));
+            _handlers = new Dictionary<Type, List<IHandler>>();
+        }
+        public void Publish<T>(T message)
+        {
+            if (!_handlers.ContainsKey(typeof(T))) return;
+
+            foreach (var handler in _handlers[typeof(T)])
+            {
+                ((IHandle<T>) handler).Handle(message);
+            }
         }
 
-        public void Subscribe(string topic, IHandleOrder subscriber)
+        public void Subscribe<T>(IHandle<T> handler)
         {
-            lock (_lock)
+            if (_handlers.ContainsKey(typeof(T)))
             {
-                if (_topics.ContainsKey(topic))
+                lock (_lock)
                 {
-                    var subscribers = _topics[topic];
-                    var newSubscribers = new List<IHandleOrder>(subscribers) { subscriber };
-                    _topics[topic] = newSubscribers;
-                }
-                else
-                {
-                    _topics.Add(topic, new List<IHandleOrder> { subscriber });
+                    var handlers = _handlers[typeof(T)];
+                    _handlers[typeof(T)] = new List<IHandler>(handlers) {handler};
                 }
             }
-
-
+            else
+            {
+                _handlers[typeof(T)] = new List<IHandler>{handler};
+            }
         }
+    }
 
-        public void Publish<T>(Order order)
-        {
-            Publish(typeof(T).Name, order);
-        }
+    public interface IHandle<T> : IHandler
+    {
+        void Handle(T message);
+    }
 
-        internal void Subscribe<T>(IHandleOrder subscriber)
-        {
-            Subscribe(typeof(T).Name, subscriber);
-        }
+    public interface IHandler
+    {
     }
 }
