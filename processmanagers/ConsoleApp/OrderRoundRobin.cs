@@ -6,7 +6,7 @@ namespace ConsoleApp
     {
         private readonly Queue<IHandle<T>> _handlers ;
 
-        public RoundRobin(List<IHandle<T>> handlers)
+        public RoundRobin(IEnumerable<IHandle<T>> handlers)
         {
             _handlers = new Queue<IHandle<T>>(handlers);
         }

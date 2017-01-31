@@ -17,17 +17,10 @@ namespace ConsoleApp
             var cashier = new Cashier(pubSub);
             var printer = new OrderPrinter();
 
-
-//            var assistantManagers = Enumerable.Range(0, 2)
-//                .Select(index => new AssistantManager(pubSub))
-//                .Select(manager => new ThreadedOrderHandler("Assistant", manager))
-//                .ToList();
-
-            var assistantManagers = new List<IHandle<OrderCooked>>
-            {
-                new ThreadedHandler<OrderCooked>("Assistant 1", new AssistantManager(pubSub)),
-                new ThreadedHandler<OrderCooked>("Assistant 2", new AssistantManager(pubSub))
-            };
+            var assistantManagers = Enumerable.Range(0, 2)
+                .Select(index => new AssistantManager(pubSub))
+                .Select(manager => new ThreadedHandler<OrderCooked>("Assistant", manager))
+                .ToList();
             var assistantManager = new RoundRobin<OrderCooked>(assistantManagers);
 
             var cooks = Enumerable.Range(0, 3)
