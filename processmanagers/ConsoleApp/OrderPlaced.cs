@@ -1,6 +1,8 @@
-﻿namespace ConsoleApp
+﻿using System;
+
+namespace ConsoleApp
 {
-    public class OrderPlaced
+    public class OrderPlaced : IHaveATimeToLive
     {
         public Order Order { get; }
 
@@ -8,5 +10,12 @@
         {
             Order = order;
         }
+
+        public DateTime DueTime => Order.DueTime;
+    }
+
+    public interface IHaveATimeToLive
+    {
+        DateTime DueTime { get; }
     }
 }

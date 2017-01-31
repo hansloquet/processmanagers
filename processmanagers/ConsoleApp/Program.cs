@@ -32,6 +32,7 @@ namespace ConsoleApp
             var cooks = Enumerable.Range(0, 3)
                 .Select(index => assistantManager)
                 .Select(managers => new Cook(random.Next(0, 4000), pubSub))
+                .Select(cook => new TtlChecker<OrderPlaced>(cook))
                 .Select(c => new ThreadedHandler<OrderPlaced>("Cook", c))
                 .ToList();
             var kitchenDispatcher = new ThreadedHandler<OrderPlaced>("Kitchen Dispatcher", new MoreFairHandler<OrderPlaced>(cooks));
@@ -85,5 +86,4 @@ namespace ConsoleApp
             Console.ReadLine();
         }
     }
-
 }
