@@ -23,7 +23,7 @@ namespace ConsoleApp
 //                .ToList();
 
 //           var assistantManagerDispatcher = new OrderRoundRobin(assistantManagers);
-            var assistantManager = new AssistantManager(pubSub);
+            var assistantManager = new ThreadedHandler<OrderCooked>("Assistant", new AssistantManager(pubSub));
 
             var cooks = Enumerable.Range(0, 3)
                 .Select(index => assistantManager)
@@ -52,7 +52,7 @@ namespace ConsoleApp
                               
 //            foreach (var assistentManager in assistantManagers)
 //            {
-//                assistentManager.Start();
+                assistantManager.Start();
 //            }
 
             Task.Factory.StartNew(() =>
@@ -83,4 +83,5 @@ namespace ConsoleApp
             Console.ReadLine();
         }
     }
+
 }
