@@ -18,13 +18,13 @@ namespace ConsoleApp
             {
                 foreach (var cook in _cooks)
                 {
-                    if (cook.Wip < 5)
+                    if (cook.Wip < 2)
                     {
                         cook.Handle(order);
                         return;
                     }
-                    Thread.Sleep(1000);
                 }
+                Thread.Sleep(100);
             }
         }
     }

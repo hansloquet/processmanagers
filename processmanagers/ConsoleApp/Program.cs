@@ -45,10 +45,12 @@ namespace ConsoleApp
                 while (true)
                 {
                     Console.WriteLine("*******************");
+                    Console.WriteLine($"{threadedHandler.Name} {threadedHandler.Wip}");
                     foreach (var cook in cooks)
                     {
                         Console.WriteLine($"{cook.Name} {cook.Wip}");
                     }
+
                     Thread.Sleep(1000);
                 }
             });
