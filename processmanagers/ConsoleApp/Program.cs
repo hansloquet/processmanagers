@@ -9,12 +9,12 @@ namespace ConsoleApp
     {
         public static void Main(string[] args)
         {
-            var printer = new OrderPrinter(Console.WriteLine);
+            var printer = new OrderPrinter();
             var cashier = new Cashier(printer);
             var assistentManager = new AssistentManager(cashier);
             var tom = new ThreadedHandler(new Cook("Tom", assistentManager));
             var basil = new ThreadedHandler( new Cook("Basil", assistentManager));
-            var frank = new Cook("Frank", assistentManager);
+            var frank = new ThreadedHandler( new Cook("Frank", assistentManager));
 
             var repeater = new RoundRobin(tom, basil, frank);
 
@@ -22,7 +22,7 @@ namespace ConsoleApp
 
             tom.Start();
             basil.Start();
-            //fran.Start();
+            frank.Start();
 
             for (var i = 0; i < 10; i++)
             {
