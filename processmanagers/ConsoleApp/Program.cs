@@ -9,8 +9,8 @@ namespace ConsoleApp
             var printer = new OrderPrinter();
             var cashier = new Cashier(printer);
 
-            var assistentManager1 = new ThreadedHandler(new AssistentManager(cashier));
-            var assistentManager2 = new ThreadedHandler(new AssistentManager(cashier));
+            var assistentManager1 = new ThreadedHandler(new AssistantManager(cashier));
+            var assistentManager2 = new ThreadedHandler(new AssistantManager(cashier));
             var assistentManagers = new RoundRobin(assistentManager1, assistentManager2);
 
             var tom = new ThreadedHandler(new Cook("Tom", assistentManagers));
