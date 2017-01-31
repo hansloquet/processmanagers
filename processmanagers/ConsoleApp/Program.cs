@@ -25,7 +25,7 @@ namespace ConsoleApp
                 .ToList();
 
 
-            var threadedHandler = new ThreadedHandler("More Fair  Handler", new MoreFairHandler(cooks));
+            var threadedHandler = new ThreadedHandler("More Fair Handler", new MoreFairHandler(cooks));
             var waiter = new Waiter(threadedHandler);
 
 
