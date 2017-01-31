@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace ConsoleApp
 {
@@ -9,25 +11,35 @@ namespace ConsoleApp
             var printer = new OrderPrinter();
             var cashier = new Cashier(printer);
 
-            var assistentManager1 = new ThreadedHandler(new AssistantManager(cashier));
-            var assistentManager2 = new ThreadedHandler(new AssistantManager(cashier));
+            var assistentManager1 = new ThreadedHandler("Assistant1", new AssistantManager(cashier));
+            var assistentManager2 = new ThreadedHandler("Assistant2", new AssistantManager(cashier));
+
             var assistentManagers = new RoundRobin(assistentManager1, assistentManager2);
 
-            var tom = new ThreadedHandler(new Cook("Tom", assistentManagers));
-            var basil = new ThreadedHandler( new Cook("Basil", assistentManagers));
-            var frank = new ThreadedHandler( new Cook("Frank", assistentManagers));
+            var tom = new ThreadedHandler("Cook1", new Cook("Tom", assistentManagers));
+            var basil = new ThreadedHandler("Cook2", new Cook("Basil", assistentManagers));
+            var frank = new ThreadedHandler("Cook3", new Cook("Frank", assistentManagers));
             var cooks = new RoundRobin(tom, basil, frank);
 
             var waiter = new Waiter(cooks);
+
+            assistentManager1.Start();
+            assistentManager2.Start();
 
             tom.Start();
             basil.Start();
             frank.Start();
 
-            assistentManager1.Start();
-            assistentManager2.Start();
+            Task.Factory.StartNew(() =>
+            {
+                while (true)
+                {
+                    Console.WriteLine($"{tom.Name} {tom.Wip}");
+                    Thread.Sleep(1000);   
+                }
+            });
 
-            for (var i = 0; i < 10; i++)
+            for (var i = 0; i < 100; i++)
             {
                 waiter.PlaceOrder();
             }

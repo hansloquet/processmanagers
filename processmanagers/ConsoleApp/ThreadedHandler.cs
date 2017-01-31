@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,11 +8,16 @@ namespace ConsoleApp
 {
     internal class ThreadedHandler : IHandleOrder, IStartable
     {
-        private readonly IHandleOrder _handler;
-        readonly Queue<Order> orders = new Queue<Order>();
+        
+        public int Wip => orders.Count;
+        public string Name { get; private set; }
 
-        public ThreadedHandler(IHandleOrder handler)
+        private readonly IHandleOrder _handler;
+        readonly ConcurrentQueue<Order> orders = new ConcurrentQueue<Order>();
+
+        public ThreadedHandler(string name, IHandleOrder handler)
         {
+            Name = name;
             _handler = handler;
         }
 
@@ -27,9 +33,10 @@ namespace ConsoleApp
                     {
                         while (true)
                         {
-                            if (orders.Any())
+                            Order order;
+                            if (orders.TryDequeue(out order))
                             {
-                                _handler.Handle(order: orders.Dequeue());
+                                _handler.Handle(order: order);
                             }
                             else
                             {
