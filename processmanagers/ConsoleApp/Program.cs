@@ -28,13 +28,13 @@ namespace ConsoleApp
                 .Select(checker => new ThreadedHandler("Cook", checker))
                 .ToList();
 
-            var threadedHandler = new ThreadedHandler("More Fair Handler", new MoreFairHandler(cooks));
-            topicBasedPubSub.Subscribe("OrderPlaced", threadedHandler);
+            var orderDispatcher = new ThreadedHandler("More Fair Handler", new MoreFairHandler(cooks));
+            topicBasedPubSub.Subscribe("OrderPlaced", orderDispatcher);
 
             var waiter = new Waiter(topicBasedPubSub);
 
 
-            threadedHandler.Start();
+            orderDispatcher.Start();
             foreach (var cook in cooks)
             {
                 cook.Start();
@@ -50,7 +50,7 @@ namespace ConsoleApp
                 while (true)
                 {
                     Console.WriteLine("*******************");
-                    Console.WriteLine($"{threadedHandler.Name} {threadedHandler.Wip}");
+                    Console.WriteLine($"{orderDispatcher.Name} {orderDispatcher.Wip}");
                     foreach (var cook in cooks)
                     {
                         Console.WriteLine($"{cook.Name} - WIP: {cook.Wip} - DONE: {cook.Done}");
