@@ -57,9 +57,4 @@ namespace ConsoleApp
             Console.ReadLine();
         }
     }
-
-    internal interface IStartable
-    {
-        void Start();
-    }
 }

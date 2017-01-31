@@ -48,6 +48,7 @@
     <Compile Include="Cashier.cs" />
     <Compile Include="Cook.cs" />
     <Compile Include="HandleOrder.cs" />
+    <Compile Include="IStartable.cs" />
     <Compile Include="Order.cs" />
     <Compile Include="OrderPrinter.cs" />
     <Compile Include="Program.cs" />
