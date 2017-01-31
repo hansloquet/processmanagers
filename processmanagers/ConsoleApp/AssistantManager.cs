@@ -3,7 +3,7 @@ using System.Threading;
 
 namespace ConsoleApp
 {
-    public class AssistantManager : IHandleOrder
+    public class AssistantManager : IHandleOrder, IHandle<OrderCooked>
     {
         private readonly IPublisher _publisher;
 
@@ -20,6 +20,11 @@ namespace ConsoleApp
             Thread.Sleep(1000);
 
             _publisher.Publish(new OrderCalculated(order));
+        }
+
+        public void Handle(OrderCooked message)
+        {
+            Handle(message.Order);
         }
     }
 }

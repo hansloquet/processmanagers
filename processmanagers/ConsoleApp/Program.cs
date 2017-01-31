@@ -17,16 +17,17 @@ namespace ConsoleApp
             var printer = new OrderPrinter();
 
 
-            var assistantManagers = Enumerable.Range(0, 2)
-                .Select(index => new AssistantManager(pubSub))
-                .Select(manager => new ThreadedOrderHandler("Assistant", manager))
-                .ToList();
+//            var assistantManagers = Enumerable.Range(0, 2)
+//                .Select(index => new AssistantManager(pubSub))
+//                .Select(manager => new ThreadedOrderHandler("Assistant", manager))
+//                .ToList();
 
-           var assistantManagerDispatcher = new OrderRoundRobin(assistantManagers);
+//           var assistantManagerDispatcher = new OrderRoundRobin(assistantManagers);
+            var assistantManager = new AssistantManager(pubSub);
 
             var cooks = Enumerable.Range(0, 3)
-                .Select(index => assistantManagerDispatcher)
-                .Select(managers => new Cook(random.Next(1000, 4000), orderPubSub))
+                .Select(index => assistantManager)
+                .Select(managers => new Cook(random.Next(1000, 4000), pubSub))
                 .Select(cook => new TtlOrderChecker(cook))
                 .Select(checker => new ThreadedOrderHandler("Cook", checker))
                 .ToList();
@@ -37,7 +38,7 @@ namespace ConsoleApp
 
             // subscribe
             orderPubSub.Subscribe<OrderPlaced>(kitchenDispatcher);
-            orderPubSub.Subscribe<OrderCooked>(assistantManagerDispatcher);
+            pubSub.Subscribe(assistantManager);
             pubSub.Subscribe(cashier);
             pubSub.Subscribe(printer);
 
@@ -49,10 +50,10 @@ namespace ConsoleApp
                 cook.Start();
             }
                               
-            foreach (var assistentManager in assistantManagers)
-            {
-                assistentManager.Start();
-            }
+//            foreach (var assistentManager in assistantManagers)
+//            {
+//                assistentManager.Start();
+//            }
 
             Task.Factory.StartNew(() =>
             {
@@ -64,10 +65,10 @@ namespace ConsoleApp
                     {
                         Console.WriteLine($"{cook.Name} - WIP: {cook.Wip} - DONE: {cook.Done}");
                     }
-                    foreach (var manager in assistantManagers)
-                    {
-                        Console.WriteLine($"{manager.Name} - WIP: {manager.Wip} - DONE: {manager.Done}");
-                    }
+//                    foreach (var manager in assistantManagers)
+//                    {
+//                        Console.WriteLine($"{manager.Name} - WIP: {manager.Wip} - DONE: {manager.Done}");
+//                    }
                     Console.WriteLine($"Cashier - DONE: {cashier.Done}");
                     Console.WriteLine($"Paid - DONE: {printer.Done} - Total income: {printer.Total}");
                     Thread.Sleep(1000);
