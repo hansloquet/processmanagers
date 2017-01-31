@@ -13,9 +13,4 @@ namespace ConsoleApp
 
         public DateTime DueTime => Order.DueTime;
     }
-
-    public interface IHaveATimeToLive
-    {
-        DateTime DueTime { get; }
-    }
 }
