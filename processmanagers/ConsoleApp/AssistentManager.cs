@@ -1,25 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using ConsoleApp;
+﻿using System.Threading;
 
-namespace Messages
+namespace ConsoleApp
 {
-    public class AssistentManager : HandleOrder
+    public class AssistentManager : IHandleOrder
     {
-        private readonly HandleOrder _handleOrder;
+        private readonly IHandleOrder _handleOrder;
 
 
-        public AssistentManager(HandleOrder handleOrder)
+        public AssistentManager(IHandleOrder handleOrder)
         {
             _handleOrder = handleOrder;
         }
         public void Handle(Order order)
         {
-            Thread.Sleep(5000);
+            Thread.Sleep(1000);
             _handleOrder.Handle(order);
         }
     }

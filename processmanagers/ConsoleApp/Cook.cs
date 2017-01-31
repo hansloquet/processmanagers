@@ -1,20 +1,19 @@
 ﻿using System.Threading;
-using Messages;
 
 namespace ConsoleApp
 {
-    public class Cook : HandleOrder
+    public class Cook : IHandleOrder
     {
-        private readonly HandleOrder _handleOrder;
+        private readonly IHandleOrder _handleOrder;
 
-        public Cook(HandleOrder handleOrder)
+        public Cook(IHandleOrder handleOrder)
         {
             _handleOrder = handleOrder;
         }
 
         public void Handle(Order order)
         {
-            Thread.Sleep(2000);
+            Thread.Sleep(1000);
             _handleOrder.Handle(order);
         }
     }

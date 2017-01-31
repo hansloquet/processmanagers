@@ -1,5 +1,4 @@
 ﻿using System.Threading;
-using Messages;
 
 namespace ConsoleApp
 {
@@ -20,11 +19,11 @@ namespace ConsoleApp
         }
     }
 
-    internal class Cashier : HandleOrder
+    internal class Cashier : IHandleOrder
     {
-        private readonly HandleOrder _handleOrder;
+        private readonly IHandleOrder _handleOrder;
 
-        public Cashier(HandleOrder handleOrder)
+        public Cashier(IHandleOrder handleOrder)
         {
             _handleOrder = handleOrder;
     

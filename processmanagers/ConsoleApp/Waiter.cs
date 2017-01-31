@@ -4,9 +4,9 @@ namespace ConsoleApp
 {
     public class Waiter
     {
-        private readonly HandleOrder _handleOrder;
+        private readonly IHandleOrder _handleOrder;
 
-        public Waiter(HandleOrder handleOrder)
+        public Waiter(IHandleOrder handleOrder)
         {
             _handleOrder = handleOrder;
         }

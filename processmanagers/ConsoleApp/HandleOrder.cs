@@ -1,8 +1,6 @@
-﻿using Messages;
-
-namespace ConsoleApp
+﻿namespace ConsoleApp
 {
-    public interface HandleOrder
+    public interface IHandleOrder
     {
         void Handle(Order order);
     }

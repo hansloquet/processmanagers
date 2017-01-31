@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace ConsoleApp
 {
-    public class OrderPrinter : HandleOrder
+    public class OrderPrinter : IHandleOrder
     {
         public void Handle(Order order)
         {
