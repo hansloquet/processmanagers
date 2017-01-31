@@ -7,11 +7,16 @@ namespace ConsoleApp
     {
         public static void Main(string[] args)
         {
-          
+            var printer = new OrderPrinter();
+            var cashier = new Cashier(printer);
+            var assistentManager = new AssistentManager(cashier);
+            var cook = new Cook(assistentManager);
+            var waiter = new Waiter(cook);
 
-            var waiter = new Waiter(new Cook(new AssistentManager(new Cashier(new OrderPrinter()))));
-            
-            waiter.PlaceOrder();
+            for (var i = 0; i < 10; i++)
+            {
+                waiter.PlaceOrder();
+            }
         }
     }
 
