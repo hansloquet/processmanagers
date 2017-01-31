@@ -16,7 +16,7 @@ namespace ConsoleApp
             var cashier = new Cashier(pubSub);
             var printer = new OrderPrinter();
 
-            var assistantManagers = Enumerable.Range(0, 5)
+            var assistantManagers = Enumerable.Range(0, 2)
                 .Select(index => new AssistantManager(pubSub))
                 .Select(manager => new ThreadedHandler<OrderCooked>("Assistant", manager))
                 .ToList();
@@ -29,25 +29,24 @@ namespace ConsoleApp
 //                .Select(checker => new ThreadedOrderHandler("Cook", checker))
 //                .ToList();
 
-//            var kitchenDispatcher = new ThreadedOrderHandler("More Fair Handler", new MoreFairHandler(cooks));
             var cooks = Enumerable.Range(0, 3)
                 .Select(index => assistantManager)
-                .Select(managers => new Cook(random.Next(0, 500), pubSub))
+                .Select(managers => new Cook(random.Next(0, 4000), pubSub))
                 .Select(c => new ThreadedHandler<OrderPlaced>("Cook", c))
                 .ToList();
-            var cook = new RoundRobin<OrderPlaced>(cooks);
+            var kitchenDispatcher = new ThreadedHandler<OrderPlaced>("Kitchen Dispatcher", new MoreFairHandler<OrderPlaced>(cooks));
 
             var waiter = new Waiter(pubSub);
 
             // subscribe
-            pubSub.Subscribe(cook);
+            pubSub.Subscribe(kitchenDispatcher);
             pubSub.Subscribe(assistantManager);
             pubSub.Subscribe(cashier);
             pubSub.Subscribe(printer);
 
             //orderpaid
             
-//            kitchenDispatcher.Start();
+            kitchenDispatcher.Start();
             foreach (var c in cooks)
             {
                 c.Start();
@@ -63,7 +62,7 @@ namespace ConsoleApp
                 while (true)
                 {
                     Console.WriteLine("*******************");
-//                    Console.WriteLine($"{kitchenDispatcher.Name} {kitchenDispatcher.Wip}");
+                    Console.WriteLine($"{kitchenDispatcher.Name} {kitchenDispatcher.Wip}");
                     foreach (var c in cooks)
                     {
                         Console.WriteLine($"{c.Name} - WIP: {c.Wip} - DONE: {c.Done}");
