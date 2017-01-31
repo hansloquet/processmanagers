@@ -15,7 +15,7 @@ namespace ConsoleApp
             var waiter = new Waiter(pubSub);
 
             var cooks = Enumerable.Range(0, 3)
-                .Select(index => new Cook(random.Next(0, 4000), pubSub))
+                .Select(index => new Cook(random.Next(1000, 4000), pubSub))
                 .Select(cook => new TtlChecker<OrderPlaced>(cook))
                 .Select(c => new ThreadedHandler<OrderPlaced>("Cook", c))
                 .ToList();
@@ -71,6 +71,7 @@ namespace ConsoleApp
             for (var i = 0; i < 100; i++)
             {
                 waiter.PlaceOrder();
+                Thread.Sleep(100);
             }
 
             Console.ReadLine();

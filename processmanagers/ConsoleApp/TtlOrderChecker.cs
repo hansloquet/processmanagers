@@ -14,7 +14,7 @@ namespace ConsoleApp
         public void Handle(T message)
         {
             var ttlMessage = message as IHaveATimeToLive;
-            if (message != null && ttlMessage.DueTime < DateTime.Now)
+            if (ttlMessage != null && ttlMessage.DueTime < DateTime.Now)
             {
                 Console.WriteLine("DROPPING ORDER!");
             }
