@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Messages
 {
-    class Cook : HandleOrder
+    public class Cook : HandleOrder
     {
         private readonly HandleOrder _handleOrder;
 

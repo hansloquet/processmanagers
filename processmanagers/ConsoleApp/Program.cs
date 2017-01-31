@@ -6,13 +6,11 @@ namespace ConsoleApp
     {
         public static void Main(string[] args)
         {
-            HandleOrder handle = new OrderPrinter();
-            var waiter = new Waiter(handle);
+          
+
+            var waiter = new Waiter(new Cook(new AssistentManager(new OrderPrinter())));
+            
             waiter.PlaceOrder();
-            var order = new Order();
-            handle.Handle(order);
-            var printer = new OrderPrinter();
-            printer.Handle(order);
         }
     }
 }
