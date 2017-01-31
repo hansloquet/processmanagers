@@ -3,7 +3,7 @@ using System.Threading;
 
 namespace ConsoleApp
 {
-    public class AssistantManager : IHandleOrder, IHandle<OrderCooked>
+    public class AssistantManager : IHandle<OrderCooked>
     {
         private readonly IPublisher _publisher;
 

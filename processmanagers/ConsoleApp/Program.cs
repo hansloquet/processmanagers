@@ -10,11 +10,16 @@ namespace ConsoleApp
     {
         public static void Main(string[] args)
         {
-            var pubSub = new TopicBasedPubSub();
-
             var random = new Random();
-            var cashier = new Cashier(pubSub);
-            var printer = new OrderPrinter();
+            var pubSub = new TopicBasedPubSub();
+            var waiter = new Waiter(pubSub);
+
+            var cooks = Enumerable.Range(0, 3)
+                .Select(index => new Cook(random.Next(0, 4000), pubSub))
+                .Select(cook => new TtlChecker<OrderPlaced>(cook))
+                .Select(c => new ThreadedHandler<OrderPlaced>("Cook", c))
+                .ToList();
+            var kitchenDispatcher = new ThreadedHandler<OrderPlaced>("Kitchen Dispatcher", new MoreFairHandler<OrderPlaced>(cooks));
 
             var assistantManagers = Enumerable.Range(0, 2)
                 .Select(index => new AssistantManager(pubSub))
@@ -22,22 +27,8 @@ namespace ConsoleApp
                 .ToList();
             var assistantManager = new RoundRobin<OrderCooked>(assistantManagers);
 
-//            var cooks = Enumerable.Range(0, 3)
-//                .Select(index => assistantManager)
-//                .Select(managers => new Cook(random.Next(1000, 4000), pubSub))
-//                .Select(cook => new TtlOrderChecker(cook))
-//                .Select(checker => new ThreadedOrderHandler("Cook", checker))
-//                .ToList();
-
-            var cooks = Enumerable.Range(0, 3)
-                .Select(index => assistantManager)
-                .Select(managers => new Cook(random.Next(0, 4000), pubSub))
-                .Select(cook => new TtlChecker<OrderPlaced>(cook))
-                .Select(c => new ThreadedHandler<OrderPlaced>("Cook", c))
-                .ToList();
-            var kitchenDispatcher = new ThreadedHandler<OrderPlaced>("Kitchen Dispatcher", new MoreFairHandler<OrderPlaced>(cooks));
-
-            var waiter = new Waiter(pubSub);
+            var cashier = new Cashier(pubSub);
+            var printer = new OrderPrinter();
 
             // subscribe
             pubSub.Subscribe(kitchenDispatcher);
@@ -45,8 +36,7 @@ namespace ConsoleApp
             pubSub.Subscribe(cashier);
             pubSub.Subscribe(printer);
 
-            //orderpaid
-            
+            // start processes
             kitchenDispatcher.Start();
             foreach (var c in cooks)
             {

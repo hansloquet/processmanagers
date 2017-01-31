@@ -2,7 +2,7 @@
 
 namespace ConsoleApp
 {
-    public class Cook : IHandleOrder, IHandle<OrderPlaced>
+    public class Cook : IHandle<OrderPlaced>
     {
         private readonly int _millisecondsTimeout;
         private readonly IPublisher _pubSub;

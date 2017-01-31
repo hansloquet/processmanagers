@@ -2,7 +2,7 @@
 
 namespace ConsoleApp
 {
-    public class Cashier : IHandleOrder, IHandle<OrderCalculated>
+    public class Cashier : IHandle<OrderCalculated>
     {
         private readonly IPublisher _publisher;
 

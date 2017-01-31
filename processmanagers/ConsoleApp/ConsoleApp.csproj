@@ -62,7 +62,6 @@
     <Compile Include="OrderPrinter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Repeater.cs" />
     <Compile Include="OrderRoundRobin.cs" />
     <Compile Include="ThreadedOrderHandler.cs" />
     <Compile Include="TopicBasedOrderPubSub.cs" />
