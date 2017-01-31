@@ -17,7 +17,7 @@ namespace ConsoleApp
 
 
             var assistantManagers = Enumerable.Range(0, 2)
-                .Select(index => new AssistantManager(cashier))
+                .Select(index => new AssistantManager(topicBasedPubSub))
                 .Select(manager => new ThreadedHandler("Assistant", manager))
                 .ToList();
 
@@ -37,7 +37,7 @@ namespace ConsoleApp
             // subscribe
             topicBasedPubSub.Subscribe<OrderPlaced>(kitchenDispatcher);
             topicBasedPubSub.Subscribe<OrderCooked>(assistantManagerDispatcher);
-            
+            topicBasedPubSub.Subscribe<OrderCalculated>(cashier);
             //orderpaid
             
             kitchenDispatcher.Start();
@@ -45,7 +45,7 @@ namespace ConsoleApp
             {
                 cook.Start();
             }
-
+                              
             foreach (var assistentManager in assistantManagers)
             {
                 assistentManager.Start();

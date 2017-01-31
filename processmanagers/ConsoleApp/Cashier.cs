@@ -10,17 +10,12 @@ namespace ConsoleApp
         public Cashier(IHandleOrder handleOrder)
         {
             _handleOrder = handleOrder;
-    
         }
 
         public int Done { get; set; }
 
         public void Handle(Order order)
         {
-            order.SubTotal = order.Items.Sum(item => item.UnitPrice + item.Qty);
-            order.Tax = 0;
-            order.Total = order.SubTotal + order.Tax;
-
             Thread.Sleep(1000);
             _handleOrder.Handle(order);
             Done++;

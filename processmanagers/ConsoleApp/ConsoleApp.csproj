@@ -53,6 +53,7 @@
     <Compile Include="Message.cs" />
     <Compile Include="MoreFairHandler.cs" />
     <Compile Include="Order.cs" />
+    <Compile Include="OrderCalculated.cs" />
     <Compile Include="OrderCooked.cs" />
     <Compile Include="OrderPlaced.cs" />
     <Compile Include="OrderPrinter.cs" />

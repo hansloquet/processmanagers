@@ -1,20 +1,25 @@
-﻿using System.Threading;
+﻿using System.Linq;
+using System.Threading;
 
 namespace ConsoleApp
 {
     public class AssistantManager : IHandleOrder
     {
-        private readonly IHandleOrder _handleOrder;
+        private readonly IPublisher _publisher;
 
-
-        public AssistantManager(IHandleOrder handleOrder)
+        public AssistantManager(IPublisher publisher)
         {
-            _handleOrder = handleOrder;
+            _publisher = publisher;
         }
         public void Handle(Order order)
         {
+            order.SubTotal = order.Items.Sum(item => item.UnitPrice + item.Qty);
+            order.Tax = 0;
+            order.Total = order.SubTotal + order.Tax;
+
             Thread.Sleep(1000);
-            _handleOrder.Handle(order);
+
+            _publisher.Publish<OrderCalculated>(order);
         }
     }
 }
