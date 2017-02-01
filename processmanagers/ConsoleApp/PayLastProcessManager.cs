@@ -51,6 +51,7 @@ namespace ProcessManagers
 
         public void Handle(Message message)
         {
+
             if(message is OrderPlaced) Handle(message as OrderPlaced);
             if(message is OrderCooked) Handle(message as OrderCooked);
             if(message is CookFoodTimedOut) Handle(message as CookFoodTimedOut);
@@ -67,8 +68,8 @@ namespace ProcessManagers
         public void Handle(CookFoodTimedOut message)
         {
             if(message.Order.Cooked) return;
-            Console.WriteLine("Recooking");
-            _publisher.Publish(new PublishAt(DateTime.Now.AddSeconds(10.0), new CookFoodTimedOut(message.Order, message.CorrelationId, message.Id)));
+            Console.WriteLine("Wake up the cook");
+            _publisher.Publish(new PublishAt(DateTime.Now.AddSeconds(5.0), new CookFoodTimedOut(message.Order, message.CorrelationId, message.Id)));
             _publisher.Publish(new CookFood(message.Order, message.CorrelationId, message.Id));
         }
 
