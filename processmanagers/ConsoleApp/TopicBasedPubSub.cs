@@ -65,14 +65,4 @@ namespace ProcessManagers
     public interface IHandler
     {
     }
-
-    public abstract class GenericHandler<T> : IHandle<T> where T : Message
-    {
-        public abstract void Handle(T message);
-
-        public void Handle(Message message)
-        {
-            Handle(message as T);
-        }
-    }
 }

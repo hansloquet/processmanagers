@@ -32,7 +32,7 @@ namespace ProcessManagers
 
             var midgetHouse = new MidgetHouse(pubSub);
             var threadedMidgetHouse = new ThreadedHandler<Message>("Midget House", midgetHouse);
-            midgetHouse.Wrapper = threadedMidgetHouse;
+            midgetHouse.SubscribeWith(correlationId => pubSub.Subscribe(correlationId, threadedMidgetHouse));
 
             // subscribe
             pubSub.Subscribe(kitchenDispatcher);
