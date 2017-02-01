@@ -16,16 +16,16 @@ namespace ProcessManagers
             var timout = 1000;
             var cooks = Enumerable.Range(0, 3)
                 .Select(index => new Cook(timout += 1000, pubSub))
-                .Select(cook => new TtlChecker<OrderPlaced>(cook))
-                .Select(c => new ThreadedHandler<OrderPlaced>("Cook", c))
+                .Select(cook => new TtlChecker<CookFood>(cook))
+                .Select(c => new ThreadedHandler<CookFood>("Cook", c))
                 .ToList();
-            var kitchenDispatcher = new ThreadedHandler<OrderPlaced>("Kitchen Dispatcher", new MoreFairHandler<OrderPlaced>(cooks));
+            var kitchenDispatcher = new ThreadedHandler<CookFood>("Kitchen Dispatcher", new MoreFairHandler<CookFood>(cooks));
 
             var assistantManagers = Enumerable.Range(0, 2)
                 .Select(index => new AssistantManager(pubSub))
-                .Select(manager => new ThreadedHandler<OrderCooked>("Assistant", manager))
+                .Select(manager => new ThreadedHandler<PriceOrder>("Assistant", manager))
                 .ToList();
-            var assistantManager = new RoundRobin<OrderCooked>(assistantManagers);
+            var assistantManager = new RoundRobin<PriceOrder>(assistantManagers);
 
             var cashier = new Cashier(pubSub);
             var printer = new OrderPrinter();

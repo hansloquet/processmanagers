@@ -1,9 +1,10 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading;
 
 namespace ProcessManagers
 {
-    public class AssistantManager : IHandle<OrderCooked>
+    public class AssistantManager : IHandle<PriceOrder>
     {
         private readonly IPublisher _publisher;
 
@@ -12,16 +13,25 @@ namespace ProcessManagers
             _publisher = publisher;
         }
 
-        public void Handle(OrderCooked message)
+        public void Handle(PriceOrder message)
         {
-            Order order = message.Order;
+            Thread.Sleep(1000);
+
+            var order = message.Order;
             order.SubTotal = order.Items.Sum(item => item.UnitPrice + item.Qty);
             order.Tax = 0;
             order.Total = order.SubTotal + order.Tax;
 
-            Thread.Sleep(1000);
-
             _publisher.Publish(new OrderCalculated(order, message));
+        }
+    }
+
+    public class PriceOrder : Message
+    {
+        public Order Order { get; private set; }
+
+        public PriceOrder(Guid correlationId, Guid causeId) : base(correlationId, causeId)
+        {
         }
     }
 }
