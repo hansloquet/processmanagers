@@ -6,7 +6,7 @@ namespace ProcessManagers
     internal class MidgetHouse : IHandle<OrderPlaced>, IHandle<Message>
     {
         private readonly TopicBasedPubSub _pubSub;
-        private readonly Dictionary<Guid, IProcessManager> _processManagers = new Dictionary<Guid, IProcessManager>();
+//        private readonly Dictionary<Guid, IProcessManager> _processManagers = new Dictionary<Guid, IProcessManager>();
         private Action<Guid> _subscribeTo;
 
         public MidgetHouse(TopicBasedPubSub pubSub)
@@ -16,15 +16,19 @@ namespace ProcessManagers
 
         public void Handle(OrderPlaced message)
         {
-            var processManager = CreateProcessManagerFor(message);
-                _processManagers[message.CorrelationId] = processManager;
+//            var processManager = CreateProcessManagerFor(message);
+//            _processManagers[message.CorrelationId] = processManager;
             _subscribeTo(message.CorrelationId);
         }
 
         public void Handle(Message message)
         {
-//            Console.WriteLine($"Message recieved {message.GetType().Name} - {message.CorrelationId}");
-            var processManager = _processManagers[message.CorrelationId];
+            var processManager = new PayLastProcessManager(new Dev0Publisher());
+            foreach (var messages in _pubSub.MessagesFor(message.CorrelationId))
+            {
+                processManager.Handle(message);
+            }
+            processManager.SetPublisher(_pubSub);
             processManager.Handle(message);
         }
 
@@ -40,6 +44,13 @@ namespace ProcessManagers
             //    return new PayFirstProcessManager(_pubSub);
             //}
             return new PayLastProcessManager(_pubSub);
+        }
+    }
+
+    internal class Dev0Publisher : IPublisher
+    {
+        public void Publish<T>(T message) where T : Message
+        {
         }
     }
 }

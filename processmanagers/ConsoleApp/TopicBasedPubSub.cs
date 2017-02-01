@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace ProcessManagers
@@ -19,7 +20,7 @@ namespace ProcessManagers
                     typedHandler.Handle(message);
                 });
             }
-            Store(message);
+            Store(topic, message);
         }
 
         public virtual void Publish<T>(T message) where T : Message
@@ -28,13 +29,11 @@ namespace ProcessManagers
             Publish<Message>(message.CorrelationId.ToString(), message);
         }
 
-        private void Store<T>(T message) where T : Message
+        private void Store<T>(string topic, T message) where T : Message
         {
-            if (!_history.ContainsKey(message.GetType().Name))
-            {
-                _history[message.GetType().Name] = new List<Message>();
-            }
-            _history[message.GetType().Name].Add(message);
+            if (!_history.ContainsKey(topic))
+                _history[topic] = new List<Message>();
+            _history[topic].Add(message);
         }
 
         public void Subscribe<T>(IHandle<T> handler)
@@ -67,6 +66,11 @@ namespace ProcessManagers
                     _handlers[correlationId.ToString()] = new List<IHandler> {handler};
                 }
             }
+        }
+
+        public IEnumerable<Message> MessagesFor(Guid correlationId)
+        {
+            return _history[correlationId.ToString()];
         }
     }
 

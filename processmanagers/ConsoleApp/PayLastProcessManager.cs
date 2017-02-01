@@ -42,7 +42,7 @@ namespace ProcessManagers
 
     internal class PayLastProcessManager : IProcessManager
     {
-        private readonly IPublisher _publisher;
+        private IPublisher _publisher;
 
         public PayLastProcessManager(IPublisher publisher)
         {
@@ -51,7 +51,6 @@ namespace ProcessManagers
 
         public void Handle(Message message)
         {
-
             if(message is OrderPlaced) Handle(message as OrderPlaced);
             if(message is OrderCooked) Handle(message as OrderCooked);
             if(message is CookFoodTimedOut) Handle(message as CookFoodTimedOut);
@@ -86,6 +85,11 @@ namespace ProcessManagers
         public void Handle(OrderPaid message)
         {
             _publisher.Publish(new PrintOrder(message.Order, message.CorrelationId, message.Id));
+        }
+
+        public void SetPublisher(IPublisher publisher)
+        {
+            _publisher = publisher;
         }
     }
 
