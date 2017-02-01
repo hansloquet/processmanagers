@@ -1,4 +1,4 @@
-﻿namespace ConsoleApp
+﻿namespace ProcessManagers
 {
     public class OrderCalculated : Message
     {

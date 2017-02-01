@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Threading;
 
-namespace ConsoleApp
+namespace ProcessManagers
 {
     public class AssistantManager : IHandle<OrderCooked>
     {

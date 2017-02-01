@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ConsoleApp
+namespace ProcessManagers
 {
     internal class Program
     {
@@ -14,8 +13,9 @@ namespace ConsoleApp
             var pubSub = new TopicBasedPubSub();
             var waiter = new Waiter(pubSub);
 
+            var timout = 1000;
             var cooks = Enumerable.Range(0, 3)
-                .Select(index => new Cook(random.Next(1000, 4000), pubSub))
+                .Select(index => new Cook(timout += 1000, pubSub))
                 .Select(cook => new TtlChecker<OrderPlaced>(cook))
                 .Select(c => new ThreadedHandler<OrderPlaced>("Cook", c))
                 .ToList();
@@ -71,7 +71,7 @@ namespace ConsoleApp
             for (var i = 0; i < 100; i++)
             {
                 waiter.PlaceOrder();
-                Thread.Sleep(100);
+                Thread.Sleep(500);
             }
 
             Console.ReadLine();

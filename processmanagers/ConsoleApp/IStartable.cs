@@ -1,4 +1,4 @@
-﻿namespace ConsoleApp
+﻿namespace ProcessManagers
 {
     internal interface IStartable
     {

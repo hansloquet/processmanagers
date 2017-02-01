@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 
-namespace ConsoleApp
+namespace ProcessManagers
 {
     internal class MoreFairHandler<T> : IHandle<T>
     {

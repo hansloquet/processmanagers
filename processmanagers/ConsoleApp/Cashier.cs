@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 
-namespace ConsoleApp
+namespace ProcessManagers
 {
     public class Cashier : IHandle<OrderCalculated>
     {

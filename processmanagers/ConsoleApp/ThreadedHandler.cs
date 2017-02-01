@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ConsoleApp
+namespace ProcessManagers
 {
     internal class ThreadedHandler<TMessage> : IHandle<TMessage>, IStartable
     {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ConsoleApp
+namespace ProcessManagers
 {
     internal class RoundRobin<T> : IHandle<T>
     {

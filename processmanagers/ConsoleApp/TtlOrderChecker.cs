@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ConsoleApp
+namespace ProcessManagers
 {
     internal class TtlChecker<T> : IHandle<T>
     {
