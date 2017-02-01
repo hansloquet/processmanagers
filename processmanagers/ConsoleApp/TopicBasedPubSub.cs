@@ -5,54 +5,54 @@ namespace ProcessManagers
 {
     internal class TopicBasedPubSub : IPublisher
     {
-        private readonly Dictionary<Type, List<IHandler>> _handlers =new Dictionary<Type, List<IHandler>>();
+        private readonly Dictionary<string, List<IHandler>> _handlers = new Dictionary<string, List<IHandler>>();
         private readonly object _lock = new object();
-        private readonly Dictionary<Guid, List<IHandler>> _correlationHandlers = new Dictionary<Guid, List<IHandler>>();
+
+        private void Publish<T>(string topic, T message)
+        {
+            if (_handlers.ContainsKey(topic))
+                _handlers[topic].ForEach(handler =>
+                {
+                    var handle = handler as IHandle<T>;
+                    handle.Handle(message);
+                });
+        }
 
         public void Publish<T>(T message) where T : Message
         {
-            if (!_handlers.ContainsKey(typeof(T))) return;
-            foreach (var handler in _handlers[typeof(T)])
-            {
-                ((IHandle<T>) handler).Handle(message);
-            }
-
-            if (!_correlationHandlers.ContainsKey(message.CorrelationId)) return;
-            foreach (var handler in _correlationHandlers[message.CorrelationId])
-            {
-                ((IHandle<Message>) handler).Handle(message);
-            }
+            Publish(message.GetType().Name, message);
+            Publish<Message>(message.CorrelationId.ToString(), message);
         }
 
         public void Subscribe<T>(IHandle<T> handler)
         {
-            if (_handlers.ContainsKey(typeof(T)))
+            lock (_lock)
             {
-                lock (_lock)
+                if (_handlers.ContainsKey(typeof(T).Name))
                 {
-                    var handlers = _handlers[typeof(T)];
-                    _handlers[typeof(T)] = new List<IHandler>(handlers) {handler};
+                    var handlers = _handlers[typeof(T).Name];
+                    _handlers[typeof(T).Name] = new List<IHandler>(handlers) {handler};
                 }
-            }
-            else
-            {
-                _handlers[typeof(T)] = new List<IHandler>{handler};
+                else
+                {
+                    _handlers[typeof(T).Name] = new List<IHandler> {handler};
+                }
             }
         }
 
         public void Subscribe(Guid correlationId, IHandle<Message> handler)
         {
-            if (_correlationHandlers.ContainsKey(correlationId))
+            lock (_lock)
             {
-                lock (_lock)
+                if (_handlers.ContainsKey(correlationId.ToString()))
                 {
-                    var handlers = _correlationHandlers[correlationId];
-                    _correlationHandlers[correlationId] = new List<IHandler>(handlers) {handler};
+                    var handlers = _handlers[correlationId.ToString()];
+                    _handlers[correlationId.ToString()] = new List<IHandler>(handlers) {handler};
                 }
-            }
-            else
-            {
-                _correlationHandlers[correlationId] = new List<IHandler>{handler};
+                else
+                {
+                    _handlers[correlationId.ToString()] = new List<IHandler> {handler};
+                }
             }
         }
     }

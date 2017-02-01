@@ -27,8 +27,9 @@ namespace ProcessManagers
     {
         public Order Order { get; private set; }
 
-        public TakePayment(Guid correlationId, Guid causeId) : base(correlationId, causeId)
+        public TakePayment(Order order, Guid correlationId, Guid causeId) : base(correlationId, causeId)
         {
+            Order = order;
         }
     }
 }

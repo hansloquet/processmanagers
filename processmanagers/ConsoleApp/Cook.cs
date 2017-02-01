@@ -28,8 +28,9 @@ namespace ProcessManagers
     {
         public Order Order { get; private set; }
 
-        public CookFood(Guid correlationId, Guid causeId) : base(correlationId, causeId)
+        public CookFood(Order order, Guid correlationId, Guid causeId) : base(correlationId, causeId)
         {
+            Order = order;
         }
     }
 }

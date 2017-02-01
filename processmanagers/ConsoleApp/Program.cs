@@ -30,11 +30,16 @@ namespace ProcessManagers
             var cashier = new Cashier(pubSub);
             var printer = new OrderPrinter();
 
+            var midgetHouse = new MidgetHouse(pubSub);
+            var threadedMidgetHouse = new ThreadedHandler<Message>("Midget House", midgetHouse);
+            midgetHouse.Wrapper = threadedMidgetHouse;
+
             // subscribe
             pubSub.Subscribe(kitchenDispatcher);
             pubSub.Subscribe(assistantManager);
             pubSub.Subscribe(cashier);
             pubSub.Subscribe(printer);
+            pubSub.Subscribe<OrderPlaced>(midgetHouse);
 
             // start processes
             kitchenDispatcher.Start();
@@ -47,6 +52,7 @@ namespace ProcessManagers
             {
                 manager.Start();
             }
+            threadedMidgetHouse.Start();
 
             Task.Factory.StartNew(() =>
             {
@@ -67,10 +73,6 @@ namespace ProcessManagers
                     Thread.Sleep(1000);
                 }
             }, TaskCreationOptions.LongRunning);
-
-            var corrId = waiter.PlaceOrder();
-
-            pubSub.Subscribe(corrId, new MyPrinter());
 
             for (var i = 0; i < 100; i++)
             {

@@ -51,6 +51,7 @@
     <Compile Include="IPublisher.cs" />
     <Compile Include="IStartable.cs" />
     <Compile Include="Message.cs" />
+    <Compile Include="MidgetHouse.cs" />
     <Compile Include="MoreFairHandler.cs" />
     <Compile Include="MyPrinter.cs" />
     <Compile Include="Order.cs" />

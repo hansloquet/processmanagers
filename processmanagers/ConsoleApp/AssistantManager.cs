@@ -30,8 +30,9 @@ namespace ProcessManagers
     {
         public Order Order { get; private set; }
 
-        public PriceOrder(Guid correlationId, Guid causeId) : base(correlationId, causeId)
+        public PriceOrder(Order order, Guid correlationId, Guid causeId) : base(correlationId, causeId)
         {
+            Order = order;
         }
     }
 }
