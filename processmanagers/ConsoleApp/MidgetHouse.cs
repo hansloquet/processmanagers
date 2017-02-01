@@ -23,7 +23,7 @@ namespace ProcessManagers
 
         public void Handle(Message message)
         {
-            Console.WriteLine($"Message recieved {message.GetType().Name} - {message.CorrelationId}");
+//            Console.WriteLine($"Message recieved {message.GetType().Name} - {message.CorrelationId}");
             var processManager = _processManagers[message.CorrelationId];
             processManager.Handle(message);
         }

@@ -48,6 +48,7 @@
     <Compile Include="AssistantManager.cs" />
     <Compile Include="Cashier.cs" />
     <Compile Include="Cook.cs" />
+    <Compile Include="ErraticMessageBehavior.cs" />
     <Compile Include="ErraticPubSub.cs" />
     <Compile Include="IHaveATimeToLive.cs" />
     <Compile Include="IProcessManager.cs" />

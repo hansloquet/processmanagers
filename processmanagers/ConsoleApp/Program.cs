@@ -9,14 +9,15 @@ namespace ProcessManagers
     {
         public static void Main(string[] args)
         {
-            var random = new Random();
+//            var random = new Random();
             var pubSub = new TopicBasedPubSub();
             var waiter = new Waiter(pubSub);
 
             var timout = 1000;
             var cooks = Enumerable.Range(0, 3)
-                .Select(index => new Cook(timout += 1000, new ErraticPubSub(pubSub)))
-               // .Select(cook => new TtlChecker<CookFood>(cook))
+                .Select(index => new Cook(timout += 1000, pubSub))
+                .Select(cook => new ErraticMessageBehavior<CookFood>(cook))
+//                .Select(cook => new TtlChecker<CookFood>(cook))
                 .Select(c => new ThreadedHandler<CookFood>("Cook", c))
                 .ToList();
             var kitchenDispatcher = new ThreadedHandler<CookFood>("Kitchen Dispatcher", new MoreFairHandler<CookFood>(cooks));
