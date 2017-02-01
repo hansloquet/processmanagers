@@ -2,11 +2,11 @@
 
 namespace ProcessManagers
 {
-    public class OrderPlaced : IHaveATimeToLive
+    public class OrderPlaced : Message, IHaveATimeToLive
     {
         public Order Order { get; }
 
-        public OrderPlaced(Order order)
+        public OrderPlaced(Order order) : base(Guid.NewGuid(), Guid.Empty)
         {
             Order = order;
         }

@@ -11,20 +11,17 @@ namespace ProcessManagers
         {
             _publisher = publisher;
         }
-        public void Handle(Order order)
+
+        public void Handle(OrderCooked message)
         {
+            Order order = message.Order;
             order.SubTotal = order.Items.Sum(item => item.UnitPrice + item.Qty);
             order.Tax = 0;
             order.Total = order.SubTotal + order.Tax;
 
             Thread.Sleep(1000);
 
-            _publisher.Publish(new OrderCalculated(order));
-        }
-
-        public void Handle(OrderCooked message)
-        {
-            Handle(message.Order);
+            _publisher.Publish(new OrderCalculated(order, message));
         }
     }
 }

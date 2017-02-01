@@ -13,16 +13,11 @@ namespace ProcessManagers
 
         public int Done { get; set; }
 
-        public void Handle(Order order)
-        {
-            Thread.Sleep(1000);
-            _publisher.Publish(new OrderPaid(order));
-            Done++;
-        }
-
         public void Handle(OrderCalculated message)
         {
-            Handle(message.Order);
+            Thread.Sleep(1000);
+            _publisher.Publish(new OrderPaid(message.Order, message));
+            Done++;
         }
     }
 }

@@ -13,16 +13,12 @@ namespace ProcessManagers
             _millisecondsTimeout = timeOut;
         }
 
-        public void Handle(Order order)
-        {
-            Thread.Sleep(_millisecondsTimeout);
-            order.Ingredients.Add($"potatoes");
-            _pubSub.Publish(new OrderCooked(order));
-        }
-
         public void Handle(OrderPlaced message)
         {
-            Handle(message.Order);
+            Order order = message.Order;
+            Thread.Sleep(_millisecondsTimeout);
+            order.Ingredients.Add($"potatoes");
+            _pubSub.Publish(new OrderCooked(order, message));
         }
     }
 }

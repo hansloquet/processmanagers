@@ -4,7 +4,7 @@
     {
         public Order Order { get; }
 
-        public OrderCalculated(Order order)
+        public OrderCalculated(Order order, Message message) : base(message.CorrelationId, message.Id)
         {
             Order = order;
         }
