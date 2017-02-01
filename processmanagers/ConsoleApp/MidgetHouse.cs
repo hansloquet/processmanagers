@@ -35,10 +35,10 @@ namespace ProcessManagers
 
         private IProcessManager CreateProcessManagerFor(OrderPlaced message)
         {
-            if (message.Order.TableNumber % 2 == 0)
-            {
-                return new PayFirstProcessManager(_pubSub);
-            }
+            //if (message.Order.TableNumber % 2 == 0)
+            //{
+            //    return new PayFirstProcessManager(_pubSub);
+            //}
             return new PayLastProcessManager(_pubSub);
         }
     }

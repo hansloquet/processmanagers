@@ -1,13 +1,7 @@
-﻿namespace ProcessManagers
-{
-    internal interface IProcessManager: IHandle<Message>,
-        IHandle<OrderPlaced>,
-        IHandle<OrderCooked>,
-        IHandle<OrderCalculated>,
-        IHandle<OrderPaid>
-    {
-    }
+﻿using System;
 
+namespace ProcessManagers
+{
     internal class PayFirstProcessManager : IProcessManager
     {
         private readonly IPublisher _publisher;
@@ -59,12 +53,22 @@
         {
             if(message is OrderPlaced) Handle(message as OrderPlaced);
             if(message is OrderCooked) Handle(message as OrderCooked);
+            if(message is CookFoodTimedOut) Handle(message as CookFoodTimedOut);
             if(message is OrderCalculated) Handle(message as OrderCalculated);
             if(message is OrderPaid) Handle(message as OrderPaid);
         }
 
         public void Handle(OrderPlaced message)
         {
+            _publisher.Publish(new PublishAt(DateTime.Now.AddSeconds(5.0), new CookFoodTimedOut(message.Order, message.CorrelationId, message.Id)));
+            _publisher.Publish(new CookFood(message.Order, message.CorrelationId, message.Id));
+        }
+
+        public void Handle(CookFoodTimedOut message)
+        {
+            if(message.Order.Cooked) return;
+            Console.WriteLine("Recooking");
+            _publisher.Publish(new PublishAt(DateTime.Now.AddSeconds(10.0), new CookFoodTimedOut(message.Order, message.CorrelationId, message.Id)));
             _publisher.Publish(new CookFood(message.Order, message.CorrelationId, message.Id));
         }
 
@@ -82,5 +86,15 @@
         {
             _publisher.Publish(new PrintOrder(message.Order, message.CorrelationId, message.Id));
         }
+    }
+
+    internal class CookFoodTimedOut : Message
+    {
+        public CookFoodTimedOut(Order order, Guid correlationId, Guid causeId) : base(correlationId, causeId)
+        {
+            Order = order;
+        }
+
+        public Order Order { get; set; }
     }
 }

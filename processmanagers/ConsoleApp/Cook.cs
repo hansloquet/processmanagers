@@ -16,10 +16,13 @@ namespace ProcessManagers
 
         public void Handle(CookFood message)
         {
+            if (message.Order.Cooked) return;
+
             Thread.Sleep(_millisecondsTimeout);
 
             var order = message.Order;
             order.Ingredients.Add($"potatoes");
+            order.Cooked = true;
             _pubSub.Publish(new OrderCooked(order, message));
         }
     }

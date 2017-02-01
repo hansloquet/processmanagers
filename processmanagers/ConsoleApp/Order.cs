@@ -14,6 +14,7 @@ namespace ProcessManagers
         public int Total { get; set; }
         public TimeSpan CookingTime { get; set; }
         public DateTime DueTime { get; set; } = DateTime.Now.Add(TimeSpan.FromSeconds(10));
+        public bool Cooked { get; set; }
 
         public void AddItem(int qty, string description, int unitPrice)
         {
