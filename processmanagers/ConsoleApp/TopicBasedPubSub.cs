@@ -5,23 +5,36 @@ namespace ProcessManagers
 {
     internal class TopicBasedPubSub : IPublisher
     {
-        private readonly Dictionary<string, List<IHandler>> _handlers = new Dictionary<string, List<IHandler>>();
         private readonly object _lock = new object();
+        private readonly Dictionary<string, List<IHandler>> _handlers = new Dictionary<string, List<IHandler>>();
+        private readonly Dictionary<string, List<Message>> _history = new Dictionary<string, List<Message>>();
 
-        private void Publish<T>(string topic, T message)
+        private void Publish<T>(string topic, T message) where T : Message
         {
             if (_handlers.ContainsKey(topic))
+            {
                 _handlers[topic].ForEach(handler =>
                 {
                     var handle = handler as IHandle<T>;
                     handle.Handle(message);
                 });
+                Store(message);
+            }
         }
 
         public virtual void Publish<T>(T message) where T : Message
         {
             Publish(message.GetType().Name, message);
             Publish<Message>(message.CorrelationId.ToString(), message);
+        }
+
+        private void Store<T>(T message) where T : Message
+        {
+            if (!_history.ContainsKey(message.GetType().Name))
+            {
+                _history[message.GetType().Name] = new List<Message>();
+            }
+            _history[message.GetType().Name].Add(message);
         }
 
         public void Subscribe<T>(IHandle<T> handler)
