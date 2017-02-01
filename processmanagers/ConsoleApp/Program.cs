@@ -68,6 +68,10 @@ namespace ProcessManagers
                 }
             }, TaskCreationOptions.LongRunning);
 
+            var corrId = waiter.PlaceOrder();
+
+            pubSub.Subscribe(corrId, new MyPrinter());
+
             for (var i = 0; i < 100; i++)
             {
                 waiter.PlaceOrder();
