@@ -15,11 +15,11 @@ namespace ProcessManagers
             {
                 _handlers[topic].ForEach(handler =>
                 {
-                    var handle = handler as IHandle<T>;
-                    handle.Handle(message);
+                    var typedHandler = handler as IHandle<T>;
+                    typedHandler.Handle(message);
                 });
-                Store(message);
             }
+            Store(message);
         }
 
         public virtual void Publish<T>(T message) where T : Message
