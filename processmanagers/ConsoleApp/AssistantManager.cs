@@ -4,7 +4,7 @@ using System.Threading;
 
 namespace ProcessManagers
 {
-    public class AssistantManager : IHandle<PriceOrder>
+    public class AssistantManager : IHandle<CalculateOrder>
     {
         private readonly IPublisher _publisher;
 
@@ -13,7 +13,7 @@ namespace ProcessManagers
             _publisher = publisher;
         }
 
-        public void Handle(PriceOrder message)
+        public void Handle(CalculateOrder message)
         {
             Thread.Sleep(1000);
 
@@ -26,11 +26,11 @@ namespace ProcessManagers
         }
     }
 
-    public class PriceOrder : Message
+    public class CalculateOrder : Message
     {
         public Order Order { get; private set; }
 
-        public PriceOrder(Order order, Guid correlationId, Guid causeId) : base(correlationId, causeId)
+        public CalculateOrder(Order order, Guid correlationId, Guid causeId) : base(correlationId, causeId)
         {
             Order = order;
         }

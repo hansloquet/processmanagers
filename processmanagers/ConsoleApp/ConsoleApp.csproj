@@ -60,7 +60,7 @@
     <Compile Include="OrderPaid.cs" />
     <Compile Include="OrderPlaced.cs" />
     <Compile Include="OrderPrinter.cs" />
-    <Compile Include="ProcessManager.cs" />
+    <Compile Include="PayLastProcessManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RoundRobin.cs" />

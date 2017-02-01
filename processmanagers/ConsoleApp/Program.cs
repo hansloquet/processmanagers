@@ -23,9 +23,9 @@ namespace ProcessManagers
 
             var assistantManagers = Enumerable.Range(0, 2)
                 .Select(index => new AssistantManager(pubSub))
-                .Select(manager => new ThreadedHandler<PriceOrder>("Assistant", manager))
+                .Select(manager => new ThreadedHandler<CalculateOrder>("Assistant", manager))
                 .ToList();
-            var assistantManager = new RoundRobin<PriceOrder>(assistantManagers);
+            var assistantManager = new RoundRobin<CalculateOrder>(assistantManagers);
 
             var cashier = new Cashier(pubSub);
             var printer = new OrderPrinter();
@@ -54,27 +54,27 @@ namespace ProcessManagers
             }
             threadedMidgetHouse.Start();
 
-            Task.Factory.StartNew(() =>
-            {
-                while (true)
-                {
-                    Console.WriteLine("*******************");
-                    Console.WriteLine($"{kitchenDispatcher.Name} {kitchenDispatcher.Wip}");
-                    foreach (var c in cooks)
-                    {
-                        Console.WriteLine($"{c.Name} - WIP: {c.Wip} - DONE: {c.Done}");
-                    }
-                    foreach (var manager in assistantManagers)
-                    {
-                        Console.WriteLine($"{manager.Name} - WIP: {manager.Wip} - DONE: {manager.Done}");
-                    }
-                    Console.WriteLine($"Cashier - DONE: {cashier.Done}");
-                    Console.WriteLine($"Paid - DONE: {printer.Done} - Total income: {printer.Total}");
-                    Thread.Sleep(1000);
-                }
-            }, TaskCreationOptions.LongRunning);
+//            Task.Factory.StartNew(() =>
+//            {
+//                while (true)
+//                {
+//                    Console.WriteLine("*******************");
+//                    Console.WriteLine($"{kitchenDispatcher.Name} {kitchenDispatcher.Wip}");
+//                    foreach (var c in cooks)
+//                    {
+//                        Console.WriteLine($"{c.Name} - WIP: {c.Wip} - DONE: {c.Done}");
+//                    }
+//                    foreach (var manager in assistantManagers)
+//                    {
+//                        Console.WriteLine($"{manager.Name} - WIP: {manager.Wip} - DONE: {manager.Done}");
+//                    }
+//                    Console.WriteLine($"Cashier - DONE: {cashier.Done}");
+//                    Console.WriteLine($"Paid - DONE: {printer.Done} - Total income: {printer.Total}");
+//                    Thread.Sleep(1000);
+//                }
+//            }, TaskCreationOptions.LongRunning);
 
-            for (var i = 0; i < 100; i++)
+            for (var i = 0; i < 1; i++)
             {
                 waiter.PlaceOrder();
                 Thread.Sleep(500);
