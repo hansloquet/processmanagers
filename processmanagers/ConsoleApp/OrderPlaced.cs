@@ -2,7 +2,7 @@
 
 namespace ProcessManagers
 {
-    public class OrderPlaced : Message, IHaveATimeToLive
+    public class OrderPlaced : Message
     {
         public Order Order { get; }
 

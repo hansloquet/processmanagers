@@ -24,7 +24,7 @@ namespace ProcessManagers
         }
     }
 
-    public class CookFood : Message
+    public class CookFood : Message, IHaveATimeToLive
     {
         public Order Order { get; private set; }
 
@@ -32,5 +32,7 @@ namespace ProcessManagers
         {
             Order = order;
         }
+
+        public DateTime DueTime => Order.DueTime;
     }
 }

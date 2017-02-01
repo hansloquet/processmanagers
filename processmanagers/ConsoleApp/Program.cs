@@ -54,27 +54,27 @@ namespace ProcessManagers
             }
             threadedMidgetHouse.Start();
 
-//            Task.Factory.StartNew(() =>
-//            {
-//                while (true)
-//                {
-//                    Console.WriteLine("*******************");
-//                    Console.WriteLine($"{kitchenDispatcher.Name} {kitchenDispatcher.Wip}");
-//                    foreach (var c in cooks)
-//                    {
-//                        Console.WriteLine($"{c.Name} - WIP: {c.Wip} - DONE: {c.Done}");
-//                    }
-//                    foreach (var manager in assistantManagers)
-//                    {
-//                        Console.WriteLine($"{manager.Name} - WIP: {manager.Wip} - DONE: {manager.Done}");
-//                    }
-//                    Console.WriteLine($"Cashier - DONE: {cashier.Done}");
-//                    Console.WriteLine($"Paid - DONE: {printer.Done} - Total income: {printer.Total}");
-//                    Thread.Sleep(1000);
-//                }
-//            }, TaskCreationOptions.LongRunning);
+            Task.Factory.StartNew(() =>
+            {
+                while (true)
+                {
+                    Console.WriteLine("*******************");
+                    Console.WriteLine($"{kitchenDispatcher.Name} {kitchenDispatcher.Wip}");
+                    foreach (var c in cooks)
+                    {
+                        Console.WriteLine($"{c.Name} - WIP: {c.Wip} - DONE: {c.Done}");
+                    }
+                    foreach (var manager in assistantManagers)
+                    {
+                        Console.WriteLine($"{manager.Name} - WIP: {manager.Wip} - DONE: {manager.Done}");
+                    }
+                    Console.WriteLine($"Cashier - DONE: {cashier.Done}");
+                    Console.WriteLine($"Paid - DONE: {printer.Done} - Total income: {printer.Total}");
+                    Thread.Sleep(1000);
+                }
+            }, TaskCreationOptions.LongRunning);
 
-            for (var i = 0; i < 1; i++)
+            for (var i = 0; i < 100; i++)
             {
                 waiter.PlaceOrder();
                 Thread.Sleep(500);
