@@ -18,7 +18,7 @@ namespace ProcessManagers
                 });
         }
 
-        public void Publish<T>(T message) where T : Message
+        public virtual void Publish<T>(T message) where T : Message
         {
             Publish(message.GetType().Name, message);
             Publish<Message>(message.CorrelationId.ToString(), message);

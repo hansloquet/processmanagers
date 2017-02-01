@@ -16,7 +16,7 @@ namespace ProcessManagers
 
             var timout = 1000;
             var cooks = Enumerable.Range(0, 3)
-                .Select(index => new Cook(timout += 1000, pubSub))
+                .Select(index => new Cook(timout += 1000, new ErraticPubSub(pubSub)))
                // .Select(cook => new TtlChecker<CookFood>(cook))
                 .Select(c => new ThreadedHandler<CookFood>("Cook", c))
                 .ToList();
@@ -87,6 +87,37 @@ namespace ProcessManagers
             }
 
             Console.ReadLine();
+        }
+    }
+
+    internal class ErraticPubSub : TopicBasedPubSub
+    {
+        private readonly TopicBasedPubSub _topicBasedPubSub;
+        private readonly Random _random = new Random();
+
+        public ErraticPubSub(TopicBasedPubSub topicBasedPubSub)
+        {
+            _topicBasedPubSub = topicBasedPubSub;
+        }
+
+        public override void Publish<T>(T message)
+        {
+            if (_random.Next(100) < 5)
+            {
+                Console.WriteLine("***************");
+                Console.WriteLine($"{message.GetType().Name} MESSAGE LOST");
+                Console.WriteLine("***************");
+                return;
+            }
+            base.Publish(message);
+
+            if (_random.Next(100) > 95)
+            {
+                Console.WriteLine("***************");
+                Console.WriteLine($"{message.GetType().Name} MESSAGE DUPLICATED");
+                Console.WriteLine("***************");
+                base.Publish(message);
+            }
         }
     }
 
